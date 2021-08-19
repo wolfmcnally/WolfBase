@@ -64,3 +64,21 @@ extension String {
         return String(suffix(count))
     }
 }
+
+extension String {
+    public func chunked(into size: Int) -> [String] {
+        var result: [String] = []
+        var chunk = ""
+        for c in self {
+            chunk.append(c)
+            if chunk.count == size {
+                result.append(chunk)
+                chunk = ""
+            }
+        }
+        if !chunk.isEmpty {
+            result.append(chunk)
+        }
+        return result
+    }
+}

@@ -18,18 +18,24 @@
 
 import Foundation
 
-extension Collection where Element: BinaryInteger {
-    public var isAllZero: Bool {
-        allSatisfy { $0 == 0 }
-    }
-}
+// Based on: https://gist.github.com/01GOD/3e6bb0b19a0caf138dd4b57e22122ae1
 
-extension Collection where Element == UInt8 {
-    public var data: Data {
-        Data(self)
-    }
-}
+public enum CRC32 {
+    private static var table: [UInt32] = {
+        (0...255).map { i -> UInt32 in
+            (0..<8).reduce(UInt32(i), { c, _ in
+                (c % 2 == 0) ? (c >> 1) : (0xEDB88320 ^ (c >> 1))
+            })
+        }
+    }()
 
-extension Collection where Element == UInt8 {
-    public var hex: String { self.map { String(format: "%02hhx", $0) }.joined() }
+    public static func checksum(data: Data) -> UInt32 {
+        ~(data.reduce(~UInt32(0), { crc, byte in
+            (crc >> 8) ^ table[(Int(crc) ^ Int(byte)) & 0xFF]
+        }))
+    }
+
+    public static func checksum(string: String) -> UInt32 {
+        checksum(data: string.utf8Data)
+    }
 }

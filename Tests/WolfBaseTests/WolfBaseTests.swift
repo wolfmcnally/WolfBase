@@ -38,17 +38,33 @@ final class WolfBaseTests: XCTestCase {
         XCTAssertEqual(a, b)
     }
 
-    func testCollectionExtensions() {
+    func testCollectionExtensions1() {
         var a = Array(repeating: 0, count: 100)
         XCTAssertTrue(a.isAllZero)
         a[12] = 10
         XCTAssertFalse(a.isAllZero)
     }
     
+    func testCollectionExtensions2() {
+        let a: [UInt8] = [5, 10, 15, 20, 25]
+        XCTAssertEqual(a.hex, "050a0f1419")
+    }
+    
     func testComparableExtensions() {
         XCTAssertEqual(10.clamped(to: 0...5), 5)
         XCTAssertEqual((10.5).clamped(to: (0.0)...(5.5)), 5.5)
         XCTAssertEqual(Character("Z").clamped(to: Character("A")...Character("F")), "F")
+    }
+    
+    func testCRC32() {
+        let string = "Hello, world!"
+        XCTAssertEqual(CRC32.checksum(string: string), 3957769958)
+    }
+    
+    func testCryptoKitExtensions() {
+        let string = "Hello, world!"
+        let digest = "315f5bdb76d078c43b8ac0064e4a0164612b1fce77c869345bfc94c75894edd3"
+        XCTAssertEqual(string.utf8Data.sha256Digest.hex, digest)
     }
     
     func testDataExtensions1() {
@@ -98,7 +114,11 @@ final class WolfBaseTests: XCTestCase {
             let b: Int
         }
         
-        XCTAssertEqual(A(a: "Hello", b: 10).jsonString, #"{"a":"Hello","b":10}"#)
+        let a = A(a: "Hello", b: 10)
+        let s = #"{"a":"Hello","b":10}"#
+        
+        XCTAssertEqual(a.jsonString, s)
+        XCTAssertEqual(s.utf8Data, a.json)
     }
     
     func testHexUtils() {
@@ -109,6 +129,27 @@ final class WolfBaseTests: XCTestCase {
         XCTAssertEqual(toBytes(hex: hex), bytes)
         XCTAssertEqual(toHex(data: data), hex)
         XCTAssertEqual(toHex(bytes: bytes), hex)
+    }
+    
+    func testIntUtils1() {
+        let i: UInt64 = 0x123456789abcdef0
+        let d = toData(i)
+        XCTAssertEqual(d.hex, "123456789abcdef0")
+        XCTAssertEqual(toInt(UInt64.self, d), i)
+    }
+
+    func testIntUtils2() {
+        let i: UInt16 = 0x1234
+        let d = i.data
+        XCTAssertEqual(d.hex, "1234")
+        XCTAssertEqual(d.uint16, i)
+    }
+
+    func testIntUtils3() {
+        let i: UInt32 = 0x12345678
+        let d = i.data
+        XCTAssertEqual(d.hex, "12345678")
+        XCTAssertEqual(d.uint32, i)
     }
     
     func testOptionalExtensions() {
@@ -146,6 +187,11 @@ final class WolfBaseTests: XCTestCase {
         XCTAssertEqual(s.suffix(count: 5), "orld!")
         XCTAssertEqual(s.prefix(count: 100), s)
         XCTAssertEqual(s.suffix(count: 100), s)
+    }
+    
+    func testStringExtensions4() {
+        let s = "abcdefghijklmnopqrstuvwxyz"
+        XCTAssertEqual(s.chunked(into: 3), ["abc", "def", "ghi", "jkl", "mno", "pqr", "stu", "vwx", "yz"])
     }
     
     func testUTF8Utils() {

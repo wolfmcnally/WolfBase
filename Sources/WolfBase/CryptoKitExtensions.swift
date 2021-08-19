@@ -16,20 +16,18 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 //  SOFTWARE.
 
+#if canImport(CryptoKit)
 import Foundation
+import CryptoKit
 
-extension Collection where Element: BinaryInteger {
-    public var isAllZero: Bool {
-        allSatisfy { $0 == 0 }
+extension SHA256Digest {
+    public var data: Data { withUnsafeBytes { Data(bytes: $0.baseAddress!, count: SHA256Digest.byteCount) } }
+    public var hex: String { data.hex }
+}
+
+extension Data {
+    public var sha256Digest: Data {
+        SHA256.hash(data: self).data
     }
 }
-
-extension Collection where Element == UInt8 {
-    public var data: Data {
-        Data(self)
-    }
-}
-
-extension Collection where Element == UInt8 {
-    public var hex: String { self.map { String(format: "%02hhx", $0) }.joined() }
-}
+#endif
