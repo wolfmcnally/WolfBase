@@ -18,14 +18,17 @@
 
 import Foundation
 
-public func toData(hex: String) -> Data? {
+public func toData<S>(hex: S) -> Data? where S: StringProtocol {
+    guard hex.count & 1 == 0 else {
+        return nil
+    }
     let len = hex.count / 2
     var result = Data(capacity: len)
     for i in 0..<len {
         let j = hex.index(hex.startIndex, offsetBy: i*2)
         let k = hex.index(j, offsetBy: 2)
-        let bytes = hex[j..<k]
-        if var num = UInt8(bytes, radix: 16) {
+        let hexByte = hex[j..<k]
+        if var num = toByte(hex: hexByte) {
             result.append(&num, count: 1)
         } else {
             return nil
@@ -34,16 +37,37 @@ public func toData(hex: String) -> Data? {
     return result
 }
 
-public func toBytes(hex: String) -> [UInt8]? {
+public func toByte<S>(hex: S) -> UInt8? where S: StringProtocol {
+    guard hex.count == 2 else {
+        return nil
+    }
+    return UInt8(hex, radix: 16)
+}
+
+public func toBytes<S>(hex: S) -> [UInt8]? where S: StringProtocol {
     toData(hex: hex)?.bytes
+}
+
+public func toHex(byte: UInt8) -> String {
+    String(format: "%02x", byte)
 }
 
 public func toHex(data: Data) -> String {
     data.reduce(into: "") {
-        $0 += String(format: "%02x", $1)
+        $0 += toHex(byte: $1)
     }
 }
 
 public func toHex(bytes: [UInt8]) -> String {
     toHex(data: bytes.data)
+}
+
+extension FixedWidthInteger {
+    public var hex: String {
+        return withUnsafeByteBuffer(of: self.bigEndian) { p in
+            p.reduce(into: "") {
+                $0.append(toHex(byte: $1))
+            }
+        }
+    }
 }

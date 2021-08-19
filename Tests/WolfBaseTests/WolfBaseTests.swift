@@ -121,7 +121,19 @@ final class WolfBaseTests: XCTestCase {
         XCTAssertEqual(s.utf8Data, a.json)
     }
     
-    func testHexUtils() {
+    func testFloatingPointExtensions() {
+        XCTAssertEqual((1.1).clamped, 1.0)
+        XCTAssertEqual((-0.1).clamped, 0.0)
+    }
+    
+    func testHexUtils1() {
+        let byte: UInt8 = 0xab
+        let hex = "ab"
+        XCTAssertEqual(hex, toHex(byte: byte))
+        XCTAssertEqual(byte, toByte(hex: hex))
+    }
+    
+    func testHexUtils2() {
         let hex = "00112233abcdef"
         let bytes: [UInt8] = [0x00, 0x11, 0x22, 0x33, 0xab, 0xcd, 0xef]
         let data = Data(bytes)
@@ -129,6 +141,14 @@ final class WolfBaseTests: XCTestCase {
         XCTAssertEqual(toBytes(hex: hex), bytes)
         XCTAssertEqual(toHex(data: data), hex)
         XCTAssertEqual(toHex(bytes: bytes), hex)
+    }
+    
+    func testHexUtils3() {
+        XCTAssertEqual(UInt8(10).hex, "0a")
+        XCTAssertEqual(UInt16(10).hex, "000a")
+        XCTAssertEqual(UInt32(10).hex, "0000000a")
+        XCTAssertEqual(UInt64(10).hex, "000000000000000a")
+        XCTAssertEqual(Int64(-1).hex, "ffffffffffffffff")
     }
     
     func testIntUtils1() {
