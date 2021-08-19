@@ -6,7 +6,7 @@ let package = Package(
     name: "WolfBase",
     platforms: [
         .iOS(.v13),
-        .macOS(.v11)
+        .macOS(.v10_15)
     ],
     products: [
         .library(
