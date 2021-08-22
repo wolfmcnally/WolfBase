@@ -18,59 +18,31 @@
 
 import Foundation
 
-extension Data {
-    public init?(hex: String) {
-        guard let data = toData(hex: hex) else {
-            return nil
-        }
-        self = data
+// "Absolute Time" (CFAbsoluteTime) is bit-for-bit reconstructable, while Date.timeIntervalSince1970 and similar are not.
+
+extension Date {
+    public init(absoluteTime: Double) {
+        self = CFDateCreate(kCFAllocatorDefault, absoluteTime)! as Date
     }
     
-    public var hex: String {
-        WolfBase.toHex(data: self)
+    public var absoluteTime: Double {
+        CFDateGetAbsoluteTime(self as CFDate)
     }
 }
 
-extension Data {
-    public var bytes: [UInt8] {
-        Array(self)
+public func deserialize<T, D>(_ t: T.Type, _ data: D) -> Date? where T : DateTag, D : DataProtocol {
+    guard let interval = deserialize(Double.self, data) else {
+        return nil
     }
+    return Date(absoluteTime: interval)
 }
 
-extension Data {
-    public var utf8: String? {
-        toUTF8(data: self)
-    }
-}
-
-extension Data {
-    public init<A>(of a: A) {
-        let d = Swift.withUnsafeBytes(of: a) {
-            Data($0)
-        }
-        self = d
-    }
-    
-    public func store<A>(into a: inout A) {
-        precondition(MemoryLayout<A>.size >= count)
-        withUnsafeMutablePointer(to: &a) {
-            $0.withMemoryRebound(to: UInt8.self, capacity: count) {
-                self.copyBytes(to: $0, count: count)
-            }
-        }
-    }
-}
-
-extension Data {
-    @inlinable public func withUnsafeByteBuffer<ResultType>(_ body: (UnsafeBufferPointer<UInt8>) throws -> ResultType) rethrows -> ResultType {
-        try withUnsafeBytes { rawBuf in
-            try body(rawBuf.bindMemory(to: UInt8.self))
-        }
-    }
-}
-
-extension Data: Serializable {
+extension Date: Serializable {
     public var serialized: Data {
-        self
+        absoluteTime.serialized
     }
 }
+
+public protocol DateTag { }
+
+extension Date: DateTag { }

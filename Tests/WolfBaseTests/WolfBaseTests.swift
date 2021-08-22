@@ -74,6 +74,7 @@ final class WolfBaseTests: XCTestCase {
         XCTAssertEqual(Data(hex: hex), data)
         XCTAssertEqual(data.hex, hex)
         XCTAssertEqual(data.bytes, bytes)
+        XCTAssertEqual(data.serialized, data)
     }
     
     func testDataExtensions2() {
@@ -153,25 +154,121 @@ final class WolfBaseTests: XCTestCase {
     
     func testIntUtils1() {
         let i: UInt64 = 0x123456789abcdef0
-        let d = toData(i)
+        let d = serialize(i)
         XCTAssertEqual(d.hex, "123456789abcdef0")
-        XCTAssertEqual(toInt(UInt64.self, d), i)
+        XCTAssertEqual(deserialize(UInt64.self, d), i)
     }
 
     func testIntUtils2() {
         let i: UInt16 = 0x1234
-        let d = i.data
+        let d = i.serialized
         XCTAssertEqual(d.hex, "1234")
-        XCTAssertEqual(d.uint16, i)
+        XCTAssertEqual(deserialize(UInt16.self, d), i)
     }
 
     func testIntUtils3() {
         let i: UInt32 = 0x12345678
-        let d = i.data
+        let d = i.serialized
         XCTAssertEqual(d.hex, "12345678")
-        XCTAssertEqual(d.uint32, i)
+        XCTAssertEqual(deserialize(UInt32.self, d), i)
+    }
+        
+    func testFloatSerialization() {
+        func test<F>(_ type: F.Type) where F : BinaryFloatingPoint & Serializable {
+            let f: F = 12.345
+            let t = deserialize(F.self, f.serialized)
+            XCTAssertEqual(f, t)
+        }
+        
+        test(Float.self)
+        test(Double.self)
+        test(CGFloat.self)
+        test(Float16.self)
+        #if arch(i386) || arch(x86_64)
+        test(Float80.self)
+        #endif
     }
     
+    func testFloatSerialization2() {
+        func test<F>(_ type: F.Type) where F : BinaryFloatingPoint & Serializable, F.RawSignificand: FixedWidthInteger {
+            let a = (0..<1000).map { _ in F.random(in: F.leastNormalMagnitude...F.greatestFiniteMagnitude) }
+            let b = a.map { $0.serialized }
+            let c = b.map { deserialize(F.self, $0) }
+            let d = zip(a, c).first(where: {$0 != $1})
+            XCTAssertNil(d)
+        }
+
+        test(Float.self)
+        test(Double.self)
+        test(CGFloat.self)
+        test(Float16.self)
+        #if arch(i386) || arch(x86_64)
+        test(Float80.self)
+        #endif
+    }
+    
+    func testFloatSerialization3() {
+        func test<F>(_ type: F.Type) where F : BinaryFloatingPoint & Serializable, F.RawSignificand: FixedWidthInteger {
+            let a: [F] = [.infinity, -.infinity, .leastNonzeroMagnitude, .pi, .zero]
+            let b = a.map { $0.serialized }
+            let c = b.map { deserialize(F.self, $0) }
+            let d = zip(a, c).first(where: {$0 != $1})
+            XCTAssertNil(d)
+        }
+
+        test(Float.self)
+        test(Double.self)
+        test(CGFloat.self)
+        test(Float16.self)
+        #if arch(i386) || arch(x86_64)
+        test(Float80.self)
+        #endif
+    }
+    
+    func testFloatSerialization4() {
+        func test<F>(_ type: F.Type) where F : BinaryFloatingPoint & Serializable, F.RawSignificand: FixedWidthInteger {
+            let a: F = .nan
+            let c = deserialize(F.self, a.serialized)!
+            XCTAssert(c.isNaN)
+        }
+
+        test(Float.self)
+        test(Double.self)
+        test(CGFloat.self)
+        test(Float16.self)
+        #if arch(i386) || arch(x86_64)
+        test(Float80.self)
+        #endif
+    }
+
+    func testDecimalSerialization() {
+        let f: Decimal = 12.345
+        let t = deserialize(Decimal.self, f.serialized)
+        XCTAssertEqual(f, t)
+    }
+    
+    func testDateSerialization() {
+        for _ in 0 ..< 1000 {
+            let f = Date()
+            let t = deserialize(Date.self, f.serialized)
+            XCTAssertEqual(f, t)
+        }
+    }
+    
+    func testStringSerialization() {
+        let f = "Hello, world!"
+        let t = deserialize(String.self, f.serialized)
+        XCTAssertEqual(f, t)
+    }
+    
+    func testUUIDSerialization() {
+        for _ in 0 ..< 1000 {
+            let u = UUID()
+            let v = deserialize(UUID.self, u.serialized)
+            XCTAssertEqual(u, v)
+        }
+    }
+
     func testOptionalExtensions() {
         let a: String? = "Hello"
         let b: String? = nil

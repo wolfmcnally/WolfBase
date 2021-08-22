@@ -18,24 +18,6 @@
 
 import Foundation
 
-public func deserialize<T, D>(_ t: T.Type, _ data: D) -> UUID? where T : UUIDTag, D : DataProtocol {
-    guard data.count >= MemoryLayout<uuid_t>.size else {
-        return nil
-    }
-    
-    return Data(data).withUnsafeBytes {
-        UUID(uuid: $0.bindMemory(to: uuid_t.self).baseAddress!.pointee)
-    }
+public protocol Serializable {
+    var serialized: Data { get }
 }
-
-extension UUID: Serializable {
-    public var serialized: Data {
-        withUnsafeBytes(of: uuid) { p in
-            Data(p.bindMemory(to: UInt8.self))
-        }
-    }
-}
-
-public protocol UUIDTag { }
-
-extension UUID: UUIDTag { }

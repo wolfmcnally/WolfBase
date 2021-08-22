@@ -18,24 +18,16 @@
 
 import Foundation
 
-public func deserialize<T, D>(_ t: T.Type, _ data: D) -> UUID? where T : UUIDTag, D : DataProtocol {
-    guard data.count >= MemoryLayout<uuid_t>.size else {
-        return nil
-    }
-    
-    return Data(data).withUnsafeBytes {
-        UUID(uuid: $0.bindMemory(to: uuid_t.self).baseAddress!.pointee)
-    }
+public func deserialize<T, D>(_ t: T.Type, _ data: D) -> Decimal? where T : DecimalTag, D : DataProtocol {
+    try? JSONDecoder().decode(Decimal.self, from: Data(data))
 }
 
-extension UUID: Serializable {
+extension Decimal: Serializable {
     public var serialized: Data {
-        withUnsafeBytes(of: uuid) { p in
-            Data(p.bindMemory(to: UInt8.self))
-        }
+        try! JSONEncoder().encode(self)
     }
 }
 
-public protocol UUIDTag { }
+public protocol DecimalTag { }
 
-extension UUID: UUIDTag { }
+extension Decimal: DecimalTag { }

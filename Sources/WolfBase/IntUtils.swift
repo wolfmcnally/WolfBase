@@ -18,7 +18,7 @@
 
 import Foundation
 
-public func toData<I>(_ n: I) -> Data where I: FixedWidthInteger {
+public func serialize<I>(_ n: I) -> Data where I: FixedWidthInteger {
     let count = MemoryLayout<I>.size
     var d = Data(repeating: 0, count: count)
     d.withUnsafeMutableBytes {
@@ -27,58 +27,77 @@ public func toData<I>(_ n: I) -> Data where I: FixedWidthInteger {
     return d
 }
 
-public func toInt<I>(_ t: I.Type, _ data: Data) -> I where I: FixedWidthInteger {
-    let count = MemoryLayout<I>.size
-    precondition(data.count >= count)
-    return data.withUnsafeBytes {
-        I(bigEndian: $0.bindMemory(to: I.self).baseAddress!.pointee)
+public func deserialize<T, D>(_ t: T.Type, _ data: D) -> T? where T: FixedWidthInteger, D : DataProtocol {
+    guard data.count >= MemoryLayout<T>.size else {
+        return nil
+    }
+    return withUnsafeBytes(of: data) {
+        T(bigEndian: $0.bindMemory(to: T.self).baseAddress!.pointee)
     }
 }
 
 extension FixedWidthInteger {
-    public var data: Data {
-        toData(self)
+    public var serialized: Data {
+        serialize(self)
     }
 }
 
-extension Data {
-    public var uint: UInt {
-        toInt(UInt.self, self)
+extension UInt: Serializable {
+    public var serialized: Data {
+        serialize(self)
     }
+}
 
-    public var uint8: UInt8 {
-        toInt(UInt8.self, self)
+extension UInt8: Serializable {
+    public var serialized: Data {
+        serialize(self)
     }
+}
 
-    public var uint16: UInt16 {
-        toInt(UInt16.self, self)
+extension UInt16: Serializable {
+    public var serialized: Data {
+        serialize(self)
     }
+}
 
-    public var uint32: UInt32 {
-        toInt(UInt32.self, self)
+extension UInt32: Serializable {
+    public var serialized: Data {
+        serialize(self)
     }
+}
 
-    public var uint64: UInt64 {
-        toInt(UInt64.self, self)
+extension UInt64: Serializable {
+    public var serialized: Data {
+        serialize(self)
     }
+}
 
-    public var int: Int {
-        toInt(Int.self, self)
+extension Int: Serializable {
+    public var serialized: Data {
+        serialize(self)
     }
+}
 
-    public var int8: Int8 {
-        toInt(Int8.self, self)
+extension Int8: Serializable {
+    public var serialized: Data {
+        serialize(self)
     }
+}
 
-    public var int16: Int16 {
-        toInt(Int16.self, self)
+extension Int16: Serializable {
+    public var serialized: Data {
+        serialize(self)
     }
+}
 
-    public var int32: Int32 {
-        toInt(Int32.self, self)
+extension Int32: Serializable {
+    public var serialized: Data {
+        serialize(self)
     }
+}
 
-    public var int64: Int64 {
-        toInt(Int64.self, self)
+extension Int64: Serializable {
+    public var serialized: Data {
+        serialize(self)
     }
 }

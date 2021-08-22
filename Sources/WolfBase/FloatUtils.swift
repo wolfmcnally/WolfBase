@@ -18,59 +18,54 @@
 
 import Foundation
 
-extension Data {
-    public init?(hex: String) {
-        guard let data = toData(hex: hex) else {
-            return nil
-        }
-        self = data
+//:Todo Test this
+
+public func serialize<I>(_ n: I) -> Data where I: FloatingPoint {
+    var d = Data(repeating: 0, count: MemoryLayout<I>.size)
+    d.withUnsafeMutableBytes {
+        $0.bindMemory(to: I.self).baseAddress!.pointee = n
     }
-    
-    public var hex: String {
-        WolfBase.toHex(data: self)
+    return d
+}
+
+public func deserialize<T, D>(_ t: T.Type, _ data: D) -> T? where T: FloatingPoint, D : DataProtocol {
+    guard data.count >= MemoryLayout<T>.size else {
+        return nil
+    }
+    return withUnsafeBytes(of: data) { p in
+        p.bindMemory(to: T.self).baseAddress!.pointee
     }
 }
 
-extension Data {
-    public var bytes: [UInt8] {
-        Array(self)
-    }
-}
-
-extension Data {
-    public var utf8: String? {
-        toUTF8(data: self)
-    }
-}
-
-extension Data {
-    public init<A>(of a: A) {
-        let d = Swift.withUnsafeBytes(of: a) {
-            Data($0)
-        }
-        self = d
-    }
-    
-    public func store<A>(into a: inout A) {
-        precondition(MemoryLayout<A>.size >= count)
-        withUnsafeMutablePointer(to: &a) {
-            $0.withMemoryRebound(to: UInt8.self, capacity: count) {
-                self.copyBytes(to: $0, count: count)
-            }
-        }
-    }
-}
-
-extension Data {
-    @inlinable public func withUnsafeByteBuffer<ResultType>(_ body: (UnsafeBufferPointer<UInt8>) throws -> ResultType) rethrows -> ResultType {
-        try withUnsafeBytes { rawBuf in
-            try body(rawBuf.bindMemory(to: UInt8.self))
-        }
-    }
-}
-
-extension Data: Serializable {
+extension Float: Serializable {
     public var serialized: Data {
-        self
+        serialize(self)
     }
 }
+
+extension Double: Serializable {
+    public var serialized: Data {
+        serialize(self)
+    }
+}
+
+extension CGFloat: Serializable {
+    public var serialized: Data {
+        serialize(self)
+    }
+}
+
+@available(macOS 11.0, *)
+extension Float16: Serializable {
+    public var serialized: Data {
+        serialize(self)
+    }
+}
+
+#if arch(i386) || arch(x86_64)
+extension Float80: Serializable {
+    public var serialized: Data {
+        serialize(self)
+    }
+}
+#endif

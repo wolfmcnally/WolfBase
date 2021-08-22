@@ -82,3 +82,14 @@ extension String {
         return result
     }
 }
+
+
+public func deserialize<T, D>(_ t: T.Type, _ data: D) -> String? where T: StringProtocol, D : DataProtocol {
+    String(data: Data(data), encoding: .utf8)
+}
+
+extension String: Serializable {
+    public var serialized: Data {
+        self.utf8Data
+    }
+}
