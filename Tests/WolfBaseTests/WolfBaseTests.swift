@@ -109,17 +109,24 @@ final class WolfBaseTests: XCTestCase {
         XCTAssertTrue(a)
     }
     
-    func testEncodableExtensions() {
-        struct A: Encodable {
+    func testCodableExtensions() throws {
+        struct A: Codable, Equatable {
             let a: String
             let b: Int
         }
         
         let a = A(a: "Hello", b: 10)
         let s = #"{"a":"Hello","b":10}"#
+        let d = a.json
         
         XCTAssertEqual(a.jsonString, s)
         XCTAssertEqual(s.utf8Data, a.json)
+        try XCTAssertEqual(fromJSON(A.self, a.json), a)
+        try XCTAssertEqual(fromJSON(A.self, a.jsonString), a)
+        try XCTAssertEqual(A.fromJSON(d), a)
+        try XCTAssertEqual(A.fromJSON(s), a)
+        try XCTAssertEqual(d.fromJSON(to: A.self), a)
+        try XCTAssertEqual(s.fromJSON(to: A.self), a)
     }
     
     func testFloatingPointExtensions() {

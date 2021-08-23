@@ -29,3 +29,33 @@ extension Encodable {
         json.utf8!
     }
 }
+
+public func fromJSON<T>(_ t: T.Type, _ json: Data) throws -> T where T : Decodable {
+    try JSONDecoder().decode(T.self, from: json)
+}
+
+public func fromJSON<T>(_ t: T.Type, _ json: String) throws -> T where T : Decodable {
+    try fromJSON(T.self, json.utf8Data)
+}
+
+extension Decodable {
+    public static func fromJSON(_ data: Data) throws -> Self {
+        try WolfBase.fromJSON(Self.self, data)
+    }
+
+    public static func fromJSON(_ jsonString: String) throws -> Self {
+        try WolfBase.fromJSON(Self.self, jsonString)
+    }
+}
+
+extension Data {
+    public func fromJSON<T>(to t: T.Type) throws -> T where T : Decodable {
+        try WolfBase.fromJSON(T.self, self)
+    }
+}
+
+extension String {
+    public func fromJSON<T>(to t: T.Type) throws -> T where T : Decodable {
+        try WolfBase.fromJSON(T.self, self)
+    }
+}
