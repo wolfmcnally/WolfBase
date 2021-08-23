@@ -17,8 +17,9 @@
 //  SOFTWARE.
 
 import Foundation
-
-//:Todo Test this
+#if canImport(CoreGraphics)
+import CoreGraphics
+#endif
 
 public func serialize<I>(_ n: I) -> Data where I: FloatingPoint {
     var d = Data(repeating: 0, count: MemoryLayout<I>.size)
@@ -49,12 +50,15 @@ extension Double: Serializable {
     }
 }
 
+#if canImport(CoreGraphics)
 extension CGFloat: Serializable {
     public var serialized: Data {
         serialize(self)
     }
 }
+#endif
 
+@available(iOS 14.0, *)
 @available(macOS 11.0, *)
 extension Float16: Serializable {
     public var serialized: Data {
