@@ -67,10 +67,26 @@ extension Data {
             try body(rawBuf.bindMemory(to: UInt8.self))
         }
     }
+
+    @inlinable public mutating func withUnsafeMutableByteBuffer<ResultType>(_ body: (UnsafeMutableBufferPointer<UInt8>) throws -> ResultType) rethrows -> ResultType {
+        try withUnsafeMutableBytes { rawBuf in
+            try body(rawBuf.bindMemory(to: UInt8.self))
+        }
+    }
 }
 
 extension Data: Serializable {
     public var serialized: Data {
         self
+    }
+}
+
+extension Data {
+    public var base64: String {
+        self.base64EncodedString()
+    }
+    
+    public init?(base64 string: String) {
+        self.init(base64Encoded: string)
     }
 }
