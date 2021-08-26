@@ -190,10 +190,6 @@ final class WolfBaseTests: XCTestCase {
         test(Float.self)
         test(Double.self)
         test(CGFloat.self)
-        test(Float16.self)
-        #if arch(i386) || arch(x86_64)
-        test(Float80.self)
-        #endif
     }
     
     func testFloatSerialization2() {
@@ -208,10 +204,6 @@ final class WolfBaseTests: XCTestCase {
         test(Float.self)
         test(Double.self)
         test(CGFloat.self)
-        test(Float16.self)
-        #if arch(i386) || arch(x86_64)
-        test(Float80.self)
-        #endif
     }
     
     func testFloatSerialization3() {
@@ -226,10 +218,6 @@ final class WolfBaseTests: XCTestCase {
         test(Float.self)
         test(Double.self)
         test(CGFloat.self)
-        test(Float16.self)
-        #if arch(i386) || arch(x86_64)
-        test(Float80.self)
-        #endif
     }
     
     func testFloatSerialization4() {
@@ -242,10 +230,6 @@ final class WolfBaseTests: XCTestCase {
         test(Float.self)
         test(Double.self)
         test(CGFloat.self)
-        test(Float16.self)
-        #if arch(i386) || arch(x86_64)
-        test(Float80.self)
-        #endif
     }
 
     func testDecimalSerialization() {

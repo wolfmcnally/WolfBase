@@ -57,19 +57,3 @@ extension CGFloat: Serializable {
     }
 }
 #endif
-
-@available(iOS 14.0, *)
-@available(macOS 11.0, *)
-extension Float16: Serializable {
-    public var serialized: Data {
-        serialize(self)
-    }
-}
-
-#if arch(i386) || arch(x86_64)
-extension Float80: Serializable {
-    public var serialized: Data {
-        serialize(self)
-    }
-}
-#endif
