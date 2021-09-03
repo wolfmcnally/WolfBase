@@ -93,3 +93,9 @@ extension String: Serializable {
         self.utf8Data
     }
 }
+
+extension String {
+    public func flanked(_ leading: String, _ trailing: String) -> String {
+        leading + self + trailing
+    }
+}
