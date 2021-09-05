@@ -18,27 +18,28 @@
 
 import Foundation
 
-public func serialize<I>(_ n: I) -> Data where I: FixedWidthInteger {
+public func serialize<I>(_ n: I, littleEndian: Bool = false) -> Data where I: FixedWidthInteger {
     let count = MemoryLayout<I>.size
     var d = Data(repeating: 0, count: count)
     d.withUnsafeMutableBytes {
-        $0.bindMemory(to: I.self).baseAddress!.pointee = n.bigEndian
+        $0.bindMemory(to: I.self).baseAddress!.pointee = littleEndian ? n.littleEndian : n.bigEndian
     }
     return d
 }
 
-public func deserialize<T, D>(_ t: T.Type, _ data: D) -> T? where T: FixedWidthInteger, D : DataProtocol {
+public func deserialize<T, D>(_ t: T.Type, _ data: D, littleEndian: Bool = false) -> T? where T: FixedWidthInteger, D : DataProtocol {
     guard data.count >= MemoryLayout<T>.size else {
         return nil
     }
     return withUnsafeBytes(of: data) {
-        T(bigEndian: $0.bindMemory(to: T.self).baseAddress!.pointee)
+        let a = $0.bindMemory(to: T.self).baseAddress!.pointee
+        return littleEndian ? T(littleEndian: a) : T(bigEndian: a)
     }
 }
 
 extension FixedWidthInteger {
-    public var serialized: Data {
-        serialize(self)
+    public func serialized(littleEndian: Bool = false) -> Data {
+        serialize(self, littleEndian: littleEndian)
     }
 }
 
