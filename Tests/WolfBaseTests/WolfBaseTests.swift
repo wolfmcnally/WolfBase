@@ -164,6 +164,7 @@ final class WolfBaseTests: XCTestCase {
         let d = serialize(i)
         XCTAssertEqual(d.hex, "123456789abcdef0")
         XCTAssertEqual(deserialize(UInt64.self, d), i)
+        XCTAssertEqual(deserialize(UInt64.self, d, littleEndian: true), 0xf0debc9a78563412)
     }
 
     func testIntUtils2() {
@@ -171,6 +172,7 @@ final class WolfBaseTests: XCTestCase {
         let d = i.serialized
         XCTAssertEqual(d.hex, "1234")
         XCTAssertEqual(deserialize(UInt16.self, d), i)
+        XCTAssertEqual(deserialize(UInt16.self, d, littleEndian: true), 0x3412)
     }
 
     func testIntUtils3() {
@@ -178,6 +180,7 @@ final class WolfBaseTests: XCTestCase {
         let d = i.serialized
         XCTAssertEqual(d.hex, "12345678")
         XCTAssertEqual(deserialize(UInt32.self, d), i)
+        XCTAssertEqual(deserialize(UInt32.self, d, littleEndian: true), 0x78563412)
     }
         
     func testFloatSerialization() {

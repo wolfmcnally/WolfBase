@@ -28,10 +28,14 @@ public func serialize<I>(_ n: I, littleEndian: Bool = false) -> Data where I: Fi
 }
 
 public func deserialize<T, D>(_ t: T.Type, _ data: D, littleEndian: Bool = false) -> T? where T: FixedWidthInteger, D : DataProtocol {
-    guard data.count >= MemoryLayout<T>.size else {
+    let size = MemoryLayout<T>.size
+    guard data.count >= size else {
         return nil
     }
-    return withUnsafeBytes(of: data) {
+
+    var dataBytes = [UInt8](repeating: 0, count: size)
+    return dataBytes.withUnsafeMutableBytes {
+        data.copyBytes(to: $0, count: size)
         let a = $0.bindMemory(to: T.self).baseAddress!.pointee
         return littleEndian ? T(littleEndian: a) : T(bigEndian: a)
     }
