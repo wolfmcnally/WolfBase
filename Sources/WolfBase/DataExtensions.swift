@@ -19,7 +19,7 @@
 import Foundation
 
 extension Data {
-    public init?(hex: String) {
+    public init?<S>(hex: S) where S: StringProtocol {
         guard let data = toData(hex: hex) else {
             return nil
         }
