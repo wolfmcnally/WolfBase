@@ -20,11 +20,13 @@
 import Foundation
 import CryptoKit
 
+@available(iOS 13.0, *)
 extension SHA256Digest {
     public var data: Data { withUnsafeBytes { Data(bytes: $0.baseAddress!, count: SHA256Digest.byteCount) } }
     public var hex: String { data.hex }
 }
 
+@available(iOS 13.0, *)
 extension Data {
     public var sha256Digest: Data {
         SHA256.hash(data: self).data
