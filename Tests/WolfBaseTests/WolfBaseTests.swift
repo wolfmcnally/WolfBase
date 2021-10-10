@@ -9,6 +9,30 @@ final class WolfBaseTests: XCTestCase {
         XCTAssertEqual(b[10], [100, 101, 102, 103, 104])
     }
     
+    func testDictionaryExtensions() {
+        var a: [String : Set<String>] = [:]
+        a.add(to: "foo", "bar")
+        a.add(to: "baz", "quux")
+        a.add(to: "foo", "blah")
+        XCTAssertEqual(a.count, 2)
+        XCTAssertEqual(a["foo"]!.count, 2)
+        
+        XCTAssertEqual(a.remove(from: "baz", "quux"), "quux")
+        XCTAssertEqual(a.count, 1)
+        XCTAssertNil(a["baz"])
+
+        var b: [String : [String]] = [:]
+        b.add(to: "foo", "bar")
+        b.add(to: "baz", "quux")
+        b.add(to: "foo", "blah")
+        XCTAssertEqual(b.count, 2)
+        XCTAssertEqual(b["foo"]!.count, 2)
+        
+        XCTAssertEqual(b.remove(from: "baz", "quux"), "quux")
+        XCTAssertEqual(b.count, 1)
+        XCTAssertNil(b["baz"])
+    }
+    
     func testByteBufferUtils() {
         struct A: Equatable {
             let a: UInt8
