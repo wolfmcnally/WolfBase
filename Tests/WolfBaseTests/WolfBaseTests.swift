@@ -17,6 +17,8 @@ final class WolfBaseTests: XCTestCase {
         XCTAssertEqual(a.count, 2)
         XCTAssertEqual(a["foo"]!.count, 2)
         
+        XCTAssertEqual(Array(a.get(at: "foo")).sorted(), ["bar", "blah"])
+        
         XCTAssertEqual(a.remove(from: "baz", "quux"), "quux")
         XCTAssertEqual(a.count, 1)
         XCTAssertNil(a["baz"])
@@ -27,7 +29,9 @@ final class WolfBaseTests: XCTestCase {
         b.add(to: "foo", "blah")
         XCTAssertEqual(b.count, 2)
         XCTAssertEqual(b["foo"]!.count, 2)
-        
+
+        XCTAssertEqual(Array(b.get(at: "foo")).sorted(), ["bar", "blah"])
+
         XCTAssertEqual(b.remove(from: "baz", "quux"), "quux")
         XCTAssertEqual(b.count, 1)
         XCTAssertNil(b["baz"])

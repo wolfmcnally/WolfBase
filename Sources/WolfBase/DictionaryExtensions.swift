@@ -27,6 +27,11 @@ extension Dictionary {
         self[key]!.insert(value)
     }
     
+    /// For dictionaries where `Value` is `Set<T>`, returns the `Set` corresponding to the given `key`, or the empty set if `key` is not in the dictionary.
+    public func get<T>(at key: Key) -> Set<T> where Value == Set<T> {
+        self[key] ?? .init()
+    }
+    
     /// For dictionaries where `Value` is `Set<T>`, removes the `value: T` from the `Set` corresponding to the given `key`, and removes the `Set` from the dictionary if it becomes empty.
     ///
     /// Returns the removed value or `nil`.
@@ -50,6 +55,11 @@ extension Dictionary {
         self[key]!.append(value)
     }
     
+    /// For dictionaries where `Value` is `Array<T>`, returns the `Array` corresponding to the given `key`, or the empty set if `key` is not in the dictionary.
+    public func get<T>(at key: Key) -> Array<T> where Value == Array<T> {
+        self[key] ?? .init()
+    }
+
     /// For dictionaries where `Value` is an `Array<T>`, removes the first `value: T` from the `Array` corresponding to the given `key`, and removes the `Array` from the dictionary if it becomes empty.
     ///
     /// Returns the removed value or `nil`.
