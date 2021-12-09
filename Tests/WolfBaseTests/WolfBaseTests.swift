@@ -333,6 +333,13 @@ final class WolfBaseTests: XCTestCase {
         XCTAssertEqual(s.chunked(into: 3), ["abc", "def", "ghi", "jkl", "mno", "pqr", "stu", "vwx", "yz"])
     }
     
+    func testStringExtensions5() {
+        let s = "123456789"
+        XCTAssertEqual(s.truncated(count: 5, terminator: "."), "12345.")
+        XCTAssertEqual(s.truncated(count: 100), s)
+        XCTAssertEqual(s.truncated(count: 3), "123…")
+    }
+    
     func testUTF8Utils() {
         let string = "Hello, world!"
         let bytes: [UInt8] = [0x48, 0x65, 0x6c, 0x6c, 0x6f, 0x2c, 0x20, 0x77, 0x6f, 0x72, 0x6c, 0x64, 0x21]

@@ -63,6 +63,14 @@ extension String {
     public func suffix(count: Int) -> String {
         return String(suffix(count))
     }
+    
+    public func truncated(count: Int, terminator: String = "…") -> String {
+        guard self.count > count else {
+            return self
+        }
+        
+        return prefix(count: count) + terminator
+    }
 }
 
 extension String {
