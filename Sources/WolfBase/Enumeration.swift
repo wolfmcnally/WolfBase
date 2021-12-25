@@ -18,9 +18,8 @@
 
 import Foundation
 
-public protocol Enumeration: RawRepresentable, Hashable, Comparable, CustomStringConvertible {
-    associatedtype ValueType: Hashable, Comparable
-    var rawValue: ValueType { get }
+public protocol Enumeration: RawRepresentable, Hashable, Comparable, CustomStringConvertible where RawValue: Hashable & Comparable {
+    var rawValue: RawValue { get }
 }
 
 extension Enumeration {
@@ -39,4 +38,19 @@ extension Enumeration {
 
 public func < <T: Enumeration>(left: T, right: T) -> Bool {
     return left.rawValue < right.rawValue
+}
+
+extension Enumeration where RawValue: Encodable {
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.singleValueContainer()
+        try container.encode(rawValue)
+    }
+}
+
+extension Enumeration where RawValue: Decodable {
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.singleValueContainer()
+        let rawValue = try container.decode(RawValue.self)
+        self.init(rawValue: rawValue)!
+    }
 }
