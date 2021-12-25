@@ -19,6 +19,16 @@
 import Foundation
 
 extension String {
+    public static let empty = ""
+    public static let space = " "
+    public static let comma = ","
+    public static let tab = "\t"
+    public static let newline = "\n"
+    public static let cr = "\r"
+    public static let crlf = "\r\n"
+}
+
+extension String {
     public var utf8Data: Data {
         toData(utf8: self)
     }
@@ -88,6 +98,13 @@ extension String {
             result.append(chunk)
         }
         return result
+    }
+
+    public func indented(_ level: Int = 1, with indentationMark: String = .tab, lineSeparator: String = .newline) -> String {
+        let indentation = String(repeating: indentationMark, count: level)
+        let lines = components(separatedBy: lineSeparator)
+        let indentedLines = lines.joined(separator: lineSeparator + indentation)
+        return indentation + indentedLines
     }
 }
 
