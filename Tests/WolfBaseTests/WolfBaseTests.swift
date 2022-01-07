@@ -340,6 +340,20 @@ final class WolfBaseTests: XCTestCase {
         XCTAssertEqual(s.truncated(count: 3), "123…")
     }
     
+    func testStringFloatPrecision() {
+        let f = 1234.5678
+        let us = Locale(identifier: "us")
+        let uk = Locale(identifier: "uk")
+        
+        XCTAssertEqual(String(f, precision: 2, locale: us), "1234.57")
+        XCTAssertEqual(String(f, precision: 2, locale: uk), "1234,57")
+        XCTAssertEqual(String(f, precision: 0), "1235")
+        
+        XCTAssertEqual(f %% (2, us), "1234.57")
+        XCTAssertEqual(f %% (2, uk), "1234,57")
+        XCTAssertEqual(f %% 0, "1235")
+    }
+    
     func testUTF8Utils() {
         let string = "Hello, world!"
         let bytes: [UInt8] = [0x48, 0x65, 0x6c, 0x6c, 0x6f, 0x2c, 0x20, 0x77, 0x6f, 0x72, 0x6c, 0x64, 0x21]
@@ -354,6 +368,44 @@ final class WolfBaseTests: XCTestCase {
         let e2 = try JSONDecoder().decode(HTTPMethod.self, from: d)
         XCTAssertEqual(e, e2)
         XCTAssertTrue(e2 == .get)
+    }
+    
+    func testRangeExtensions() {
+        let cfRange = CFRange(location: 10, length: 20)
+        let nsRange = NSRange(location: 10, length: 20)
+        let range = 10 ..< 30
+        
+        XCTAssertEqual(NSRange(range), nsRange)
+        XCTAssertEqual(NSRange(cfRange), nsRange)
+        
+        XCTAssertEqual(CFRange(range), cfRange)
+        XCTAssertEqual(CFRange(nsRange), cfRange)
+        
+        XCTAssertEqual(Range(cfRange), range)
+        XCTAssertEqual(Range(nsRange), range)
+    }
+    
+    func testStringRanges() {
+        let dog = "Dog"
+        let wolf = "🐺-Wolf" // The wolf emoji takes 2 bytes
+        
+        XCTAssertEqual(dog.rangeDescription(dog.stringRange), "0..<3")
+        XCTAssertEqual(wolf.rangeDescription(wolf.stringRange), "0..<6")
+        XCTAssertEqual(dog.nsRange†, "{0, 3}")
+        XCTAssertEqual(wolf.nsRange†, "{0, 7}")
+        
+        XCTAssertEqual(dog.rangeDescription(dog.stringRange(0..<1)), "0..<1")
+        XCTAssertEqual(wolf.rangeDescription(wolf.stringRange(0..<1)), "0..<1")
+        
+        // Not allowed
+        // print(dog[0..<2])
+        // print(wolf[0])
+        XCTAssertEqual(dog[dog.stringRange(0..<2)], "Do")
+        XCTAssertEqual(wolf[wolf.stringRange(0..<1)], "🐺")
+        
+        let dogRange = dog.stringRange(0..<2)
+        let wolfRange = dog.convert(range: dogRange, to: wolf)
+        XCTAssertEqual(wolf[wolfRange], "🐺-")
     }
 }
 
