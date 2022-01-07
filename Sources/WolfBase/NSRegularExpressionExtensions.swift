@@ -19,7 +19,7 @@
 import Foundation
 
 extension NSRegularExpression {
-    public func firstMatch(in string: String, options: NSRegularExpression.MatchingOptions, range: StringRange? = nil) -> NSTextCheckingResult? {
+    public func firstMatch(in string: String, options: NSRegularExpression.MatchingOptions = [], range: StringRange? = nil) -> NSTextCheckingResult? {
         let range = range ?? string.stringRange
         let nsRange = string.nsRange(from: range)!
         return firstMatch(in: string, options: options, range: nsRange)
