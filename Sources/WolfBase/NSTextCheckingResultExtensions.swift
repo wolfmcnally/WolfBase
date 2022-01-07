@@ -19,14 +19,18 @@
 import Foundation
 
 extension NSTextCheckingResult {
-    public func stringRange(at index: Int, in string: String) -> StringRange {
+    public func string(in string: String, at index: Int) -> String {
+        return String(string[string.stringRange(from: range(at: index))!])
+    }
+
+    public func stringRange(in string: String, at index: Int) -> StringRange {
         return string.stringRange(from: range(at: index))!
     }
 
     public func captureRanges(in string: String) -> [StringRange] {
         var result = [StringRange]()
         for i in 1 ..< numberOfRanges {
-            result.append(stringRange(at: i, in: string))
+            result.append(stringRange(in: string, at: i))
         }
         return result
     }
@@ -34,7 +38,7 @@ extension NSTextCheckingResult {
 
 extension NSTextCheckingResult {
     public func get(at index: Int, in string: String) -> StringRangeReplacement {
-        let range = self.stringRange(at: index, in: string)
+        let range = self.stringRange(in: string, at: index)
         let text = String(string[range])
         return (range, text)
     }
