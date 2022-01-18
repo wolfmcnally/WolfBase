@@ -407,6 +407,58 @@ final class WolfBaseTests: XCTestCase {
         let wolfRange = dog.convert(range: dogRange, to: wolf)
         XCTAssertEqual(wolf[wolfRange], "🐺-")
     }
+    
+    func testDuration() {
+        let d1 = Duration(seconds: 60)
+        let d2 = Duration(minutes: 1)
+        let d3 = Duration(milliseconds: 60_000)
+        let d4 = Duration(hours: 1/60)
+
+        XCTAssertEqual(d1†, "60s")
+        XCTAssertEqual(d2†, "1m")
+        XCTAssertEqual(d3†, "60000ms")
+        XCTAssertEqual(d4†, "0.0167h")
+
+        XCTAssertEqual(d1, d2)
+        XCTAssertEqual(d2, d3)
+        XCTAssertEqual(d3, d4)
+        
+        XCTAssertEqual(d1.seconds, 60)
+        XCTAssertEqual(d2.seconds, 60)
+        XCTAssertEqual(d3.seconds, 60)
+        XCTAssertEqual(d4.seconds, 60)
+        
+        XCTAssertEqual(d1.minutes, 1)
+        XCTAssertEqual(d2.minutes, 1)
+        XCTAssertEqual(d3.minutes, 1)
+        XCTAssertEqual(d4.minutes, 1)
+        
+        XCTAssertEqual(d1.milliseconds, 60_000)
+        XCTAssertEqual(d2.milliseconds, 60_000)
+        XCTAssertEqual(d3.milliseconds, 60_000)
+        XCTAssertEqual(d4.milliseconds, 60_000)
+        
+        XCTAssertEqual(d1.hours, 1/60)
+        XCTAssertEqual(d2.hours, 1/60)
+        XCTAssertEqual(d3.hours, 1/60)
+        XCTAssertEqual(d4.hours, 1/60)
+
+        XCTAssertEqual(d1.toUnit(.second), Duration(value: 60, unit: .second))
+        XCTAssertEqual(d1.toUnit(.minute), Duration(value: 1, unit: .minute))
+        XCTAssertEqual(d1.toUnit(.millisecond), Duration(value: 60_000, unit: .millisecond))
+        XCTAssertEqual(d1.toUnit(.hour), Duration(value: 1/60, unit: .hour))
+        
+        XCTAssertEqual(d1.units(.second), 60)
+        XCTAssertEqual(d1.units(.minute), 1)
+        XCTAssertEqual(d1.units(.millisecond), 60_000)
+        XCTAssertEqual(d1.units(.hour), 1/60)
+        
+        XCTAssertEqual(d1 + d2, d3 * 2)
+        
+        let f = DateComponentsFormatter()
+        f.calendar = nil
+        XCTAssertEqual(f.string(from: Duration(value: 123456789, unit: .second))†, "3y 10mo 4w 0d 21:33:09")
+    }
 }
 
 struct HTTPMethod: Enumeration, Codable {

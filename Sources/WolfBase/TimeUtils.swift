@@ -18,7 +18,26 @@
 
 import Foundation
 
+public let nanosecondsPerSecond = 1_000_000_000.0
+public let microsecondsPerSecond = 1_000_000.0
+public let millisecondsPerSecond = 1_000.0
+public let secondsPerMinute: TimeInterval = 60.0
+public let minutesPerHour = 60.0
+public let secondsPerHour: TimeInterval = secondsPerMinute * minutesPerHour
+public let hoursPerDay = 24.0
+public let minutesPerDay = minutesPerHour * hoursPerDay
+public let secondsPerDay: TimeInterval = secondsPerMinute * minutesPerDay
+public let daysPerWeek = 7.0
+public let minutesPerWeek = minutesPerDay * daysPerWeek
+public let secondsPerWeek: TimeInterval = secondsPerMinute * minutesPerWeek
+public let daysPerAverageMonth = 30.436875
+public let minutesPerAverageMonth = minutesPerDay * daysPerAverageMonth
+public let secondsPerAverageMonth: TimeInterval = secondsPerMinute * minutesPerAverageMonth
+public let daysPerAverageYear = 365.2425
+public let minutesPerAverageYear = minutesPerDay * daysPerAverageYear
+public let secondsPerAverageYear: TimeInterval = secondsPerMinute * minutesPerAverageYear
+
 public func toNanoseconds(seconds: TimeInterval) -> UInt64 {
     precondition(seconds >= 0)
-    return UInt64(seconds * 1_000_000_000)
+    return UInt64(seconds * nanosecondsPerSecond)
 }
