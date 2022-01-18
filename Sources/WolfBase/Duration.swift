@@ -38,7 +38,7 @@ public struct Duration {
             lhs.rawValue < rhs.rawValue
         }
         
-        private static let abbreviations = ["ns", "µs", "ms", "s", "m", "h", "d", "w", "m", "y"]
+        private static let abbreviations = ["ns", "µs", "ms", "s", "m", "h", "d", "w", "mo", "y"]
         
         public var abbreviation: String {
             Self.abbreviations[rawValue]
