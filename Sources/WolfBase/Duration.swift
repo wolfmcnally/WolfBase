@@ -269,3 +269,6 @@ extension DateComponentsFormatter {
         string(from: duration.seconds)
     }
 }
+
+extension Duration: Hashable {
+}
