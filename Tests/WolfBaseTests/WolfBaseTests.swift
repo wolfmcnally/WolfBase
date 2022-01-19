@@ -158,8 +158,8 @@ final class WolfBaseTests: XCTestCase {
     }
     
     func testFloatingPointExtensions() {
-        XCTAssertEqual((1.1).clamped, 1.0)
-        XCTAssertEqual((-0.1).clamped, 0.0)
+        XCTAssertEqual((1.1).clamped(), 1.0)
+        XCTAssertEqual((-0.1).clamped(), 0.0)
     }
     
     func testHexUtils1() {

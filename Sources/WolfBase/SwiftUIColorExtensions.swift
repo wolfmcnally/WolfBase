@@ -16,10 +16,20 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 //  SOFTWARE.
 
-import Foundation
+#if canImport(SwiftUI)
 
-extension FloatingPoint {
-    @inlinable public func clamped(lowerBound: Self = 0, upperBound: Self = 1) -> Self {
-        min(max(self, lowerBound), upperBound)
+import SwiftUI
+
+extension Color {
+    public init(_ colorSpace: Color.RGBColorSpace = .sRGB, colour c: Colour) {
+        self.init(colorSpace, red: c.red, green: c.green, blue: c.blue, opacity: c.alpha)
     }
 }
+
+extension Color {
+    public init(hsbColour c: HSBColour) {
+        self.init(hue: c.hue, saturation: c.saturation, brightness: c.brightness, opacity: c.alpha)
+    }
+}
+
+#endif

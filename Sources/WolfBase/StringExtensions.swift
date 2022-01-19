@@ -124,3 +124,9 @@ extension String {
         leading + self + trailing
     }
 }
+
+extension JoinedSequence where Base.Element == String {
+    public func flanked(_ leading: String, _ trailing: String) -> String {
+        String(self).flanked(leading, trailing)
+    }
+}

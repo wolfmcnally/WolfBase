@@ -18,8 +18,20 @@
 
 import Foundation
 
-extension FloatingPoint {
-    @inlinable public func clamped(lowerBound: Self = 0, upperBound: Self = 1) -> Self {
-        min(max(self, lowerBound), upperBound)
+public func scale<Bound>(domain: Interval<Bound>, range: Interval<Bound>) -> (Bound) -> Bound where Bound: FloatingPoint {
+    {
+        range.at(domain.scalar(at: $0))
+    }
+}
+
+public func scale<S>(domain: Interval<S.Scalar>, range: Interval<S>) -> (S.Scalar) -> S where S: SIMD, S.Scalar: FloatingPoint {
+    {
+        range.at(domain.scalar(at: $0))
+    }
+}
+
+public func scale(domain: Interval<Double>, range: Interval<Colour>) -> (Double) -> Colour {
+    {
+        range.at(domain.scalar(at: $0))
     }
 }
