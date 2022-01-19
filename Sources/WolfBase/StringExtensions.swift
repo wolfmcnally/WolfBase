@@ -123,10 +123,18 @@ extension String {
     public func flanked(_ leading: String, _ trailing: String) -> String {
         leading + self + trailing
     }
+
+    public func flanked(_ around: String) -> String {
+        around + self + around
+    }
 }
 
 extension JoinedSequence where Base.Element == String {
     public func flanked(_ leading: String, _ trailing: String) -> String {
         String(self).flanked(leading, trailing)
+    }
+
+    public func flanked(_ around: String) -> String {
+        String(self).flanked(around)
     }
 }
