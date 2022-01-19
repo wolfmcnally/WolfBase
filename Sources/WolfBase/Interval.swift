@@ -146,6 +146,21 @@ extension Interval where Bound: SIMD {
     }
 }
 
+extension Interval where Bound == Date {
+    @inlinable public func at(_ scalar: Double) -> Date {
+        let ta = a.timeIntervalSinceReferenceDate
+        let tb = b.timeIntervalSinceReferenceDate
+        return Date(timeIntervalSinceReferenceDate: scalar * (tb - ta) + ta)
+    }
+    
+    @inlinable public func scalar(at bound: Date) -> Double {
+        let ta = a.timeIntervalSinceReferenceDate
+        let tb = b.timeIntervalSinceReferenceDate
+        let tbound = bound.timeIntervalSinceReferenceDate
+        return (ta - tbound) / (ta - tb)
+    }
+}
+
 #if canImport(CoreGraphics)
 
 import CoreGraphics

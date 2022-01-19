@@ -18,15 +18,21 @@
 
 import Foundation
 
-// "Absolute Time" (CFAbsoluteTime) is bit-for-bit reconstructable, while Date.timeIntervalSince1970 and similar are not.
-
 extension Date {
+    /// "Absolute Time" (CFAbsoluteTime) is bit-for-bit reconstructable, while Date.timeIntervalSince1970 and similar are not.
     public init(absoluteTime: Double) {
         self = CFDateCreate(kCFAllocatorDefault, absoluteTime)! as Date
     }
     
+    /// "Absolute Time" (CFAbsoluteTime) is bit-for-bit reconstructable, while Date.timeIntervalSince1970 and similar are not.
     public var absoluteTime: Double {
         CFDateGetAbsoluteTime(self as CFDate)
+    }
+}
+
+extension Date {
+    public init(year: Int, month: Int, day: Int, hour: Int = 0, minute: Int = 0, second: Int = 0) {
+        self = DateComponents(calendar: Calendar(identifier: .gregorian), timeZone: TimeZone.init(identifier: "GMT"), year: year, month: month, day: day, hour: hour, minute: minute, second: second).date!
     }
 }
 

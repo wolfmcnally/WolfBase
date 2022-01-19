@@ -114,4 +114,24 @@ final class IntervalTests: XCTestCase {
         XCTAssertEqual(s(50.0), [0.5, 0.0, 0.5])
         XCTAssertEqual(s(100.0), Colour.blue)
     }
+    
+    func testScaleDate() {
+        let d1 = Date(year: 1965, month: 1, day: 1)
+        let d2 = Date(year: 2022, month: 1, day: 1)
+
+        let d3 = Date(year: 1970, month: 7, day: 31)
+        let d4 = Date(year: 2004, month: 10, day: 30)
+
+        let s1 = scale(domain: d1..d2, range: 100..200)
+        XCTAssertEqual(s1(d1) %% 3, "100")
+        XCTAssertEqual(s1(d2) %% 3, "200")
+        XCTAssertEqual(s1(d3) %% 3, "109.784")
+        XCTAssertEqual(s1(d4) %% 3, "169.874")
+
+        let s2 = scale(domain: d1..d2, range: 1965..2022)
+        XCTAssertEqual(s2(d1) %% 3, "1965")
+        XCTAssertEqual(s2(d2) %% 3, "2022")
+        XCTAssertEqual(s2(d3) %% 3, "1970.577")
+        XCTAssertEqual(s2(d4) %% 3, "2004.828")
+    }
 }

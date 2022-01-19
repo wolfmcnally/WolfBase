@@ -35,3 +35,9 @@ public func scale(domain: Interval<Double>, range: Interval<Colour>) -> (Double)
         range.at(domain.scalar(at: $0))
     }
 }
+
+public func scale(domain: Interval<Date>, range: Interval<Double>) -> (Date) -> Double {
+    {
+        range.at(domain.scalar(at: $0))
+    }
+}
