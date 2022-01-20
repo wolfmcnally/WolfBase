@@ -37,6 +37,10 @@ public struct TimeSpan {
         self.init(start: start, duration: duration)
     }
     
+    public init(_ range: ClosedRange<Date>) {
+        self.init(start: range.lowerBound, end: range.upperBound)
+    }
+    
     public init(_ range: Range<Date>) {
         self.init(start: range.lowerBound, end: range.upperBound)
     }
