@@ -21,38 +21,51 @@ import Foundation
 public struct TimeSpan {
     public var start: Date
     public var duration: Duration
+    public var isClosed: Bool
     
-    public init(start: Date, duration: Duration) {
+    public init(start: Date, duration: Duration, isClosed: Bool = true) {
         precondition(duration.value >= 0)
         self.start = start
         self.duration = duration
+        self.isClosed = isClosed
     }
     
-    public init(start: Date, end: Date) {
+    public init(start: Date, end: Date, isClosed: Bool = true) {
         precondition(end >= start)
         let duration = Duration(
             value: end.timeIntervalSinceReferenceDate - start.timeIntervalSinceReferenceDate,
             unit: .second
         )
-        self.init(start: start, duration: duration)
+        self.init(start: start, duration: duration, isClosed: isClosed)
     }
     
     public init(_ range: ClosedRange<Date>) {
-        self.init(start: range.lowerBound, end: range.upperBound)
+        self.init(start: range.lowerBound, end: range.upperBound, isClosed: true)
     }
     
     public init(_ range: Range<Date>) {
-        self.init(start: range.lowerBound, end: range.upperBound)
+        self.init(start: range.lowerBound, end: range.upperBound, isClosed: false)
     }
     
-    public init(_ interval: Interval<Date>) {
+    public init(_ interval: Interval<Date>, isClosed: Bool = true) {
         let i = interval.normalized()
-        self.init(start: i.a, end: i.b)
+        self.init(start: i.a, end: i.b, isClosed: isClosed)
     }
 
     public var range: Range<Date> {
         get {
             start..<end
+        }
+        
+        set {
+            self.start = newValue.lowerBound
+            self.end = newValue.upperBound
+        }
+    }
+
+    public var closedRange: ClosedRange<Date> {
+        get {
+            start...end
         }
         
         set {
@@ -72,47 +85,20 @@ public struct TimeSpan {
     }
 }
 
-public struct ClosedTimeSpan {
-    public var start: Date
-    public var duration: Duration
-    
-    public init(start: Date, duration: Duration) {
-        precondition(duration.value >= 0)
-        self.start = start
-        self.duration = duration
-    }
-    
-    public init(start: Date, end: Date) {
-        precondition(end >= start)
-        let duration = Duration(
-            value: end.timeIntervalSinceReferenceDate - start.timeIntervalSinceReferenceDate,
-            unit: .second
-        )
-        self.init(start: start, duration: duration)
-    }
-
-    public init(_ range: ClosedRange<Date>) {
-        self.init(start: range.lowerBound, end: range.upperBound)
-    }
-
-    public var range: ClosedRange<Date> {
-        get {
-            start...end
-        }
-        
-        set {
-            self.start = newValue.lowerBound
-            self.end = newValue.upperBound
+extension TimeSpan: RangeExpression {
+    public func relative<C>(to collection: C) -> Range<Date> where C : Collection, Date == C.Index {
+        if isClosed {
+            return closedRange.relative(to: collection)
+        } else {
+            return range.relative(to: collection)
         }
     }
     
-    public var end: Date {
-        get {
-            start + duration
-        }
-        
-        set {
-            start = newValue - duration
+    public func contains(_ element: Date) -> Bool {
+        if isClosed {
+            return closedRange.contains(element)
+        } else {
+            return range.contains(element)
         }
     }
 }
