@@ -60,6 +60,7 @@ public struct TimeSpan {
         set {
             self.start = newValue.lowerBound
             self.end = newValue.upperBound
+            self.isClosed = false
         }
     }
 
@@ -71,6 +72,7 @@ public struct TimeSpan {
         set {
             self.start = newValue.lowerBound
             self.end = newValue.upperBound
+            self.isClosed = true
         }
     }
 
@@ -99,6 +101,16 @@ extension TimeSpan: RangeExpression {
             return closedRange.contains(element)
         } else {
             return range.contains(element)
+        }
+    }
+}
+
+extension TimeSpan: CustomStringConvertible {
+    public var description: String {
+        if isClosed {
+            return "\(start)...\(duration)"
+        } else {
+            return "\(start)..<\(duration)"
         }
     }
 }
