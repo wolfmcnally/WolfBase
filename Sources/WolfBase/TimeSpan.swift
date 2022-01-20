@@ -44,6 +44,11 @@ public struct TimeSpan {
     public init(_ range: Range<Date>) {
         self.init(start: range.lowerBound, end: range.upperBound)
     }
+    
+    public init(_ interval: Interval<Date>) {
+        let i = interval.normalized()
+        self.init(start: i.a, end: i.b)
+    }
 
     public var range: Range<Date> {
         get {
