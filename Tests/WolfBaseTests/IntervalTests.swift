@@ -66,6 +66,13 @@ final class IntervalTests: XCTestCase {
         XCTAssertEqual(i.scalar(at: 10.0), 0.0)
         XCTAssertEqual(i.scalar(at: 20.0), 1.0)
         XCTAssertEqual(i.scalar(at: 25.0), 1.5)
+
+        XCTAssertEqual((0..100).inset(by: 5), 5..95)
+        XCTAssertEqual((0..100).inset(by: -5), -5..105)
+        XCTAssertEqual((100..0).inset(by: 5), 95..5)
+        XCTAssertEqual((100..0).inset(by: -5), 105..(-5))
+        XCTAssertEqual((50..50).inset(by: 5), 55..45)
+        XCTAssertEqual((50..50).inset(by: -5), 45..55)
     }
     
     func testSIMD() {

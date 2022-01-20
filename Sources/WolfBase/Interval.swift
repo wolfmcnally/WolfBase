@@ -140,6 +140,16 @@ extension Interval where Bound: FloatingPoint {
     }
 }
 
+extension Interval where Bound: AdditiveArithmetic & Comparable {
+    @inlinable public func inset(by x: Bound) -> Interval<Bound> {
+        if isDescending {
+            return (a - x) .. (b + x)
+        } else {
+            return (a + x) .. (b - x)
+        }
+    }
+}
+
 extension Interval where Bound: SIMD {
     @inlinable public func at<S>(_ scalar: S) -> Bound where S == Bound.Scalar, Bound.Scalar: FloatingPoint {
         scalar * (b - a) + a
