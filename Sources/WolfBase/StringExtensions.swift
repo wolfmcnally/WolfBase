@@ -120,7 +120,7 @@ extension String: Serializable {
     }
 }
 
-extension String {
+extension StringProtocol {
     public func flanked(_ leading: String, _ trailing: String) -> String {
         leading + self + trailing
     }
@@ -130,7 +130,7 @@ extension String {
     }
     
     public func quoted() -> String {
-        flanked(String.quote)
+        flanked(.quote)
     }
 }
 
@@ -141,5 +141,9 @@ extension JoinedSequence where Base.Element == String {
 
     public func flanked(_ around: String) -> String {
         String(self).flanked(around)
+    }
+    
+    public func quoted() -> String {
+        flanked(.quote)
     }
 }
