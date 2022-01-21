@@ -22,6 +22,7 @@ extension String {
     public static let empty = ""
     public static let space = " "
     public static let comma = ","
+    public static let quote = "\""
     public static let tab = "\t"
     public static let newline = "\n"
     public static let cr = "\r"
@@ -136,5 +137,9 @@ extension JoinedSequence where Base.Element == String {
 
     public func flanked(_ around: String) -> String {
         String(self).flanked(around)
+    }
+    
+    public func quoted() -> String {
+        flanked(String.quote)
     }
 }
