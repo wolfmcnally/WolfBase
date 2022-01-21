@@ -132,6 +132,18 @@ extension StringProtocol {
     public func quoted() -> String {
         flanked(.quote)
     }
+    
+    public func parenthesized() -> String {
+        flanked("(", ")")
+    }
+    
+    public func braced() -> String {
+        flanked("{", "}")
+    }
+    
+    public func bracketed() -> String {
+        flanked("[", "]")
+    }
 }
 
 extension JoinedSequence where Base.Element == String {
@@ -145,5 +157,17 @@ extension JoinedSequence where Base.Element == String {
     
     public func quoted() -> String {
         flanked(.quote)
+    }
+    
+    public func parenthesized() -> String {
+        flanked("(", ")")
+    }
+    
+    public func braced() -> String {
+        flanked("{", "}")
+    }
+    
+    public func bracketed() -> String {
+        flanked("[", "]")
     }
 }
