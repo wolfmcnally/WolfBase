@@ -128,6 +128,10 @@ extension String {
     public func flanked(_ around: String) -> String {
         around + self + around
     }
+    
+    public func quoted() -> String {
+        flanked(String.quote)
+    }
 }
 
 extension JoinedSequence where Base.Element == String {
@@ -137,9 +141,5 @@ extension JoinedSequence where Base.Element == String {
 
     public func flanked(_ around: String) -> String {
         String(self).flanked(around)
-    }
-    
-    public func quoted() -> String {
-        flanked(String.quote)
     }
 }
