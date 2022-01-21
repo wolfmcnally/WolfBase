@@ -20,24 +20,30 @@ import Foundation
 
 public func scale<Bound>(domain: Interval<Bound>, range: Interval<Bound>) -> (Bound) -> Bound where Bound: FloatingPoint {
     {
-        range.at(domain.scalar(at: $0))
+        range.scale(domain.descale($0))
     }
 }
 
 public func scale<S>(domain: Interval<S.Scalar>, range: Interval<S>) -> (S.Scalar) -> S where S: SIMD, S.Scalar: FloatingPoint {
     {
-        range.at(domain.scalar(at: $0))
+        range.scale(domain.descale($0))
     }
 }
 
 public func scale(domain: Interval<Double>, range: Interval<Colour>) -> (Double) -> Colour {
     {
-        range.at(domain.scalar(at: $0))
+        range.scale(domain.descale($0))
     }
 }
 
 public func scale(domain: Interval<Date>, range: Interval<Double>) -> (Date) -> Double {
     {
-        range.at(domain.scalar(at: $0))
+        range.scale(domain.descale($0))
+    }
+}
+
+public func scale(domain: DurationUnit, range: DurationUnit) -> (Double) -> Double {
+    {
+        $0 * domain / range
     }
 }

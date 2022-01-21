@@ -248,9 +248,9 @@ extension Colour {
     public static func blend(from: Colour, to: Colour) -> (Double) -> Colour {
         {
             Colour(
-                red: (from.red..to.red).at($0),
-                green: (from.green..to.green).at($0),
-                blue: (from.blue..to.blue).at($0),
+                red: (from.red..to.red).scale($0),
+                green: (from.green..to.green).scale($0),
+                blue: (from.blue..to.blue).scale($0),
                 alpha: from.alpha)
         }
     }
@@ -311,7 +311,7 @@ extension Colour {
     public static let clear = Colour(red: 0, green: 0, blue: 0, alpha: 0)
     public static let pink = Colour(red: 1, green: 0.75294118, blue: 0.79607843)
 
-    public static let chartreuse = (Colour.yellow..Colour.green).at(0.5)
+    public static let chartreuse = (Colour.yellow..Colour.green).scale(0.5)
     public static let gold = Colour(redByte: 251, greenByte: 212, blueByte: 55)
     public static let blueGreen = Colour(redByte: 0, greenByte: 169, blueByte: 149)
     public static let mediumBlue = Colour(redByte: 0, greenByte: 110, blueByte: 185)
@@ -335,8 +335,8 @@ extension Colour: ExpressibleByArrayLiteral {
 extension Colour: Equatable { }
 
 extension Interval where Bound == Colour {
-    @inlinable public func at(_ scalar: Double) -> Colour {
-        Colour.blend(from: a, to: b)(scalar)
+    @inlinable public var scale: (Double) -> Colour {
+        Colour.blend(from: a, to: b)
     }
 }
 

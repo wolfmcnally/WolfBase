@@ -18,6 +18,42 @@
 
 import Foundation
 
+extension ClosedRange where Bound == Date {
+    public init(_ date: Date, _ duration: TimeInterval) {
+        if duration < 0 {
+            self = (date + duration)...date
+        } else {
+            self = date...(date + duration)
+        }
+    }
+    
+    public var duration: TimeInterval {
+        upperBound.timeIntervalSince(lowerBound)
+    }
+}
+
+extension Range where Bound == Date {
+    public init(_ date: Date, _ duration: TimeInterval) {
+        if duration < 0 {
+            self = (date + duration)..<date
+        } else {
+            self = date..<(date + duration)
+        }
+    }
+
+    public var duration: TimeInterval {
+        upperBound.timeIntervalSince(lowerBound)
+    }
+}
+
+public func ... (lhs: Date, rhs: TimeInterval) -> ClosedRange<Date> {
+    ClosedRange(lhs, rhs)
+}
+
+public func ..< (lhs: Date, rhs: TimeInterval) -> Range<Date> {
+    Range(lhs, rhs)
+}
+
 #if canImport(CoreFoundation)
 import CoreFoundation
 extension NSRange {

@@ -38,7 +38,7 @@ extension Interval: CustomStringConvertible {
 
 extension Interval {
     /// Returns an interval with the same bounds as this interval, but swapped
-    @inlinable public func swapped() -> Interval {
+    @inlinable public var swapped: Interval {
         Interval(b, a)
     }
 }
@@ -72,8 +72,8 @@ extension Interval where Bound: Comparable {
     }
 
     /// Returns an interval with the same bounds as this interval, but where `a` is the minimum bound and `b` is the maximum bound.
-    @inlinable public func normalized() -> Interval {
-        isAscending ? self : swapped()
+    @inlinable public var normalized: Interval {
+        isAscending ? self : swapped
     }
     
     /// Returns the lesser of the two bounds
@@ -125,18 +125,18 @@ extension Interval where Bound: Comparable {
     /// Converts this `Interval` to a `ClosedRange`. If `a` > `b` then `b`
     /// will be the range's `lowerBound`.
     @inlinable public var closedRange: ClosedRange<Bound> {
-        let i = normalized()
+        let i = normalized
         return i.a ... i.b
     }
 }
 
 extension Interval where Bound: FloatingPoint {
-    @inlinable public func at(_ scalar: Bound) -> Bound {
-        scalar * (b - a) + a
+    public var scale: (Bound) -> Bound {
+        { $0 * (b - a) + a }
     }
-    
-    @inlinable public func scalar(at bound: Bound) -> Bound {
-        (a - bound) / (a - b)
+
+    public var descale: (Bound) -> Bound {
+        { (a - $0) / (a - b) }
     }
 }
 
@@ -150,24 +150,28 @@ extension Interval where Bound: AdditiveArithmetic & Comparable {
     }
 }
 
-extension Interval where Bound: SIMD {
-    @inlinable public func at<S>(_ scalar: S) -> Bound where S == Bound.Scalar, Bound.Scalar: FloatingPoint {
-        scalar * (b - a) + a
+extension Interval where Bound: SIMD, Bound.Scalar: FloatingPoint {
+    public var scale: (Bound.Scalar) -> Bound {
+        { $0 * (b - a) + a }
     }
 }
 
 extension Interval where Bound == Date {
-    @inlinable public func at(_ scalar: Double) -> Date {
-        let ta = a.timeIntervalSinceReferenceDate
-        let tb = b.timeIntervalSinceReferenceDate
-        return Date(timeIntervalSinceReferenceDate: scalar * (tb - ta) + ta)
+    public var scale: (Double) -> Date {
+        {
+            let ta = a.timeIntervalSinceReferenceDate
+            let tb = b.timeIntervalSinceReferenceDate
+            return Date(timeIntervalSinceReferenceDate: $0 * (tb - ta) + ta)
+        }
     }
     
-    @inlinable public func scalar(at bound: Date) -> Double {
-        let ta = a.timeIntervalSinceReferenceDate
-        let tb = b.timeIntervalSinceReferenceDate
-        let tbound = bound.timeIntervalSinceReferenceDate
-        return (ta - tbound) / (ta - tb)
+    public var descale: (Date) -> Double {
+        {
+            let ta = a.timeIntervalSinceReferenceDate
+            let tb = b.timeIntervalSinceReferenceDate
+            let tbound = $0.timeIntervalSinceReferenceDate
+            return (ta - tbound) / (ta - tb)
+        }
     }
 }
 
@@ -176,26 +180,26 @@ extension Interval where Bound == Date {
 import CoreGraphics
 
 extension Interval where Bound == CGPoint {
-    public func at(_ scalar: CGFloat) -> CGPoint {
-        CGPoint(x: (a.x..b.x).at(scalar), y: (a.y..b.y).at(scalar))
+    public var scale: (CGFloat) -> (CGPoint) {
+        { CGPoint(x: (a.x..b.x).scale($0), y: (a.y..b.y).scale($0)) }
     }
 }
 
 extension Interval where Bound == CGVector {
-    public func at(_ scalar: CGFloat) -> CGVector {
-        CGVector(dx: (a.dx..b.dx).at(scalar), dy: (a.dy..b.dy).at(scalar))
+    public var scale: (CGFloat) -> CGVector {
+        { CGVector(dx: (a.dx..b.dx).scale($0), dy: (a.dy..b.dy).scale($0)) }
     }
 }
 
 extension Interval where Bound == CGSize {
-    public func at(_ scalar: CGFloat) -> CGSize {
-        CGSize(width: (a.width..b.width).at(scalar), height: (a.height..b.height).at(scalar))
+    public var scale: (CGFloat) -> CGSize {
+        { CGSize(width: (a.width..b.width).scale($0), height: (a.height..b.height).scale($0)) }
     }
 }
 
 extension Interval where Bound == CGRect {
-    public func at(_ scalar: CGFloat) -> CGRect {
-        CGRect(origin: (a.origin..b.origin).at(scalar), size: (a.size..b.size).at(scalar))
+    public var scale: (CGFloat) -> CGRect {
+        { CGRect(origin: (a.origin..b.origin).scale($0), size: (a.size..b.size).scale($0)) }
     }
 }
 

@@ -8,14 +8,14 @@ final class IntervalTests: XCTestCase {
         XCTAssertEqual(i.description, "10.0..20.0")
         
         XCTAssertEqual(i, 10.0..20.0)
-        XCTAssertEqual(i.swapped(), 20.0..10.0)
+        XCTAssertEqual(i.swapped, 20.0..10.0)
         XCTAssertTrue(i.isAscending)
         XCTAssertFalse(i.isDescending)
-        XCTAssertFalse(i.swapped().isAscending)
-        XCTAssertTrue(i.swapped().isDescending)
+        XCTAssertFalse(i.swapped.isAscending)
+        XCTAssertTrue(i.swapped.isDescending)
         XCTAssertFalse(i.isFlat)
         XCTAssertTrue((10.0..10.0).isFlat)
-        XCTAssertEqual(i.swapped().normalized(), i)
+        XCTAssertEqual(i.swapped.normalized, i)
         XCTAssertEqual(i.min, 10.0)
         XCTAssertEqual(i.max, 20.0)
         
@@ -50,22 +50,22 @@ final class IntervalTests: XCTestCase {
         XCTAssertEqual(i, Interval(10.0...20.0))
         XCTAssertEqual(i.closedRange, 10.0...20.0)
         
-        XCTAssertEqual(i.at(-0.5), 5.0)
-        XCTAssertEqual(i.at(0.0), 10.0)
-        XCTAssertEqual(i.at(0.5), 15.0)
-        XCTAssertEqual(i.at(1.0), 20.0)
-        XCTAssertEqual(i.at(1.5), 25.0)
+        XCTAssertEqual(i.scale(-0.5), 5.0)
+        XCTAssertEqual(i.scale(0.0), 10.0)
+        XCTAssertEqual(i.scale(0.5), 15.0)
+        XCTAssertEqual(i.scale(1.0), 20.0)
+        XCTAssertEqual(i.scale(1.5), 25.0)
 
-        XCTAssertEqual(i.swapped().at(-0.5), 25.0)
-        XCTAssertEqual(i.swapped().at(0.0), 20.0)
-        XCTAssertEqual(i.swapped().at(0.5), 15.0)
-        XCTAssertEqual(i.swapped().at(1.0), 10.0)
-        XCTAssertEqual(i.swapped().at(1.5), 5.0)
+        XCTAssertEqual(i.swapped.scale(-0.5), 25.0)
+        XCTAssertEqual(i.swapped.scale(0.0), 20.0)
+        XCTAssertEqual(i.swapped.scale(0.5), 15.0)
+        XCTAssertEqual(i.swapped.scale(1.0), 10.0)
+        XCTAssertEqual(i.swapped.scale(1.5), 5.0)
 
-        XCTAssertEqual(i.scalar(at: 5.0), -0.5)
-        XCTAssertEqual(i.scalar(at: 10.0), 0.0)
-        XCTAssertEqual(i.scalar(at: 20.0), 1.0)
-        XCTAssertEqual(i.scalar(at: 25.0), 1.5)
+        XCTAssertEqual(i.descale(5.0), -0.5)
+        XCTAssertEqual(i.descale(10.0), 0.0)
+        XCTAssertEqual(i.descale(20.0), 1.0)
+        XCTAssertEqual(i.descale(25.0), 1.5)
 
         XCTAssertEqual((0..100).inset(by: 5), 5..95)
         XCTAssertEqual((0..100).inset(by: -5), -5..105)
@@ -80,19 +80,19 @@ final class IntervalTests: XCTestCase {
         
         XCTAssertEqual(i.extent, [20.0, 20.0])
 
-        XCTAssertEqual(i.at(-0.5), [0.0, 10.0])
-        XCTAssertEqual(i.at(0.0), [10.0, 20.0])
-        XCTAssertEqual(i.at(0.5), [20.0, 30.0])
-        XCTAssertEqual(i.at(1.0), [30.0, 40.0])
-        XCTAssertEqual(i.at(1.5), [40.0, 50.0])
+        XCTAssertEqual(i.scale(-0.5), [0.0, 10.0])
+        XCTAssertEqual(i.scale(0.0), [10.0, 20.0])
+        XCTAssertEqual(i.scale(0.5), [20.0, 30.0])
+        XCTAssertEqual(i.scale(1.0), [30.0, 40.0])
+        XCTAssertEqual(i.scale(1.5), [40.0, 50.0])
     }
     
     func testColour() {
         let c = Colour.red..Colour.blue
         
-        XCTAssertEqual(c.at(0.0), Colour.red)
-        XCTAssertEqual(c.at(0.5), [0.5, 0.0, 0.5])
-        XCTAssertEqual(c.at(1.0), Colour.blue)
+        XCTAssertEqual(c.scale(0.0), Colour.red)
+        XCTAssertEqual(c.scale(0.5), [0.5, 0.0, 0.5])
+        XCTAssertEqual(c.scale(1.0), Colour.blue)
     }
     
     func testScaleFloatingPoint() {

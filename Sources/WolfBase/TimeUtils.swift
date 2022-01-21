@@ -41,3 +41,49 @@ public func toNanoseconds(seconds: TimeInterval) -> UInt64 {
     precondition(seconds >= 0)
     return UInt64(seconds * nanosecondsPerSecond)
 }
+
+public enum DurationUnit {
+    case nanoseconds
+    case microseconds
+    case milliseconds
+    case seconds
+    case minutes
+    case hours
+    case days
+    case weeks
+    case months
+    case years
+    
+    public var seconds: TimeInterval {
+        switch self {
+        case .nanoseconds:
+            return 1 / nanosecondsPerSecond
+        case .microseconds:
+            return 1 / microsecondsPerSecond
+        case .milliseconds:
+            return 1 / millisecondsPerSecond
+        case .seconds:
+            return 1
+        case .minutes:
+            return secondsPerMinute
+        case .hours:
+            return secondsPerHour
+        case .days:
+            return secondsPerDay
+        case .weeks:
+            return secondsPerWeek
+        case .months:
+            return secondsPerAverageMonth
+        case .years:
+            return secondsPerAverageYear
+        }
+    }
+}
+
+public func * (lhs: Double, rhs: DurationUnit) -> TimeInterval {
+    lhs * rhs.seconds
+}
+
+public func / (lhs: Double, rhs: DurationUnit) -> TimeInterval {
+    lhs / rhs.seconds
+}
