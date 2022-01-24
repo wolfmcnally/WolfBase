@@ -44,6 +44,6 @@ public func scale(domain: Interval<Date>, range: Interval<Double>) -> (Date) -> 
 
 public func scale(domain: DurationUnit, range: DurationUnit) -> (Double) -> Double {
     {
-        $0 * domain / range
+        range.scale(domain.descale($0))
     }
 }

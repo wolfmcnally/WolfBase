@@ -80,6 +80,16 @@ public enum DurationUnit {
     }
 }
 
+extension DurationUnit {
+    public var scale: (TimeInterval) -> Double {
+        { $0 / self }
+    }
+    
+    public var descale: (Double) -> TimeInterval {
+        { $0 * self }
+    }
+}
+
 public func * (lhs: Double, rhs: DurationUnit) -> TimeInterval {
     lhs * rhs.seconds
 }

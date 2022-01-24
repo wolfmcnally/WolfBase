@@ -50,22 +50,25 @@ final class IntervalTests: XCTestCase {
         XCTAssertEqual(i, Interval(10.0...20.0))
         XCTAssertEqual(i.closedRange, 10.0...20.0)
         
-        XCTAssertEqual(i.scale(-0.5), 5.0)
-        XCTAssertEqual(i.scale(0.0), 10.0)
-        XCTAssertEqual(i.scale(0.5), 15.0)
-        XCTAssertEqual(i.scale(1.0), 20.0)
-        XCTAssertEqual(i.scale(1.5), 25.0)
+        let s = i.scale
+        XCTAssertEqual(s(-0.5), 5.0)
+        XCTAssertEqual(s(0.0), 10.0)
+        XCTAssertEqual(s(0.5), 15.0)
+        XCTAssertEqual(s(1.0), 20.0)
+        XCTAssertEqual(s(1.5), 25.0)
 
-        XCTAssertEqual(i.swapped.scale(-0.5), 25.0)
-        XCTAssertEqual(i.swapped.scale(0.0), 20.0)
-        XCTAssertEqual(i.swapped.scale(0.5), 15.0)
-        XCTAssertEqual(i.swapped.scale(1.0), 10.0)
-        XCTAssertEqual(i.swapped.scale(1.5), 5.0)
+        let s2 = i.swapped.scale
+        XCTAssertEqual(s2(-0.5), 25.0)
+        XCTAssertEqual(s2(0.0), 20.0)
+        XCTAssertEqual(s2(0.5), 15.0)
+        XCTAssertEqual(s2(1.0), 10.0)
+        XCTAssertEqual(s2(1.5), 5.0)
 
-        XCTAssertEqual(i.descale(5.0), -0.5)
-        XCTAssertEqual(i.descale(10.0), 0.0)
-        XCTAssertEqual(i.descale(20.0), 1.0)
-        XCTAssertEqual(i.descale(25.0), 1.5)
+        let s3 = i.descale
+        XCTAssertEqual(s3(5.0), -0.5)
+        XCTAssertEqual(s3(10.0), 0.0)
+        XCTAssertEqual(s3(20.0), 1.0)
+        XCTAssertEqual(s3(25.0), 1.5)
 
         XCTAssertEqual((0..100).inset(by: 5), 5..95)
         XCTAssertEqual((0..100).inset(by: -5), -5..105)
@@ -140,5 +143,35 @@ final class IntervalTests: XCTestCase {
         XCTAssertEqual(s2(d2) %% 3, "2022")
         XCTAssertEqual(s2(d3) %% 3, "1970.577")
         XCTAssertEqual(s2(d4) %% 3, "2004.828")
+    }
+    
+    func testDurationScale() {
+        XCTAssertEqual(DurationUnit.seconds.descale(0), 0)
+        XCTAssertEqual(DurationUnit.seconds.descale(0.5), 0.5)
+        XCTAssertEqual(DurationUnit.seconds.descale(1), 1)
+
+        XCTAssertEqual(DurationUnit.seconds.scale(0), 0)
+        XCTAssertEqual(DurationUnit.seconds.scale(0.5), 0.5)
+        XCTAssertEqual(DurationUnit.seconds.scale(1), 1)
+
+        XCTAssertEqual(DurationUnit.minutes.descale(0), 0)
+        XCTAssertEqual(DurationUnit.minutes.descale(0.5), 30)
+        XCTAssertEqual(DurationUnit.minutes.descale(1), 60)
+        XCTAssertEqual(DurationUnit.minutes.descale(1/60), 1)
+
+        XCTAssertEqual(DurationUnit.minutes.scale(0), 0)
+        XCTAssertEqual(DurationUnit.minutes.scale(30), 0.5)
+        XCTAssertEqual(DurationUnit.minutes.scale(60), 1)
+        XCTAssertEqual(DurationUnit.minutes.scale(1), 1/60)
+
+        XCTAssertEqual(DurationUnit.milliseconds.descale(0), 0)
+        XCTAssertEqual(DurationUnit.milliseconds.descale(0.5), 1/2000)
+        XCTAssertEqual(DurationUnit.milliseconds.descale(1), 1/1000)
+        XCTAssertEqual(DurationUnit.milliseconds.descale(1000), 1)
+
+        XCTAssertEqual(DurationUnit.milliseconds.scale(0), 0)
+        XCTAssertEqual(DurationUnit.milliseconds.scale(1/2000), 0.5)
+        XCTAssertEqual(DurationUnit.milliseconds.scale(1/1000), 1)
+        XCTAssertEqual(DurationUnit.milliseconds.scale(1), 1000)
     }
 }
