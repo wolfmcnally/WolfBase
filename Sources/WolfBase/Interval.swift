@@ -130,6 +130,21 @@ extension Interval where Bound: Comparable {
     }
 }
 
+extension Interval where Bound: Comparable {
+    /// Converts a `Range` to an Interval.
+    @inlinable public init(_ i: Range<Bound>) {
+        self.a = i.lowerBound
+        self.b = i.upperBound
+    }
+
+    /// Converts this `Interval` to a `Range`. If `a` > `b` then `b`
+    /// will be the range's `lowerBound`.
+    @inlinable public var range: Range<Bound> {
+        let i = normalized
+        return i.a ..< i.b
+    }
+}
+
 extension Interval where Bound: FloatingPoint {
     public var scale: (Bound) -> Bound {
         { $0 * (b - a) + a }
