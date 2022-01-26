@@ -187,6 +187,10 @@ final class WolfBaseTests: XCTestCase {
         XCTAssertEqual(Int64(-1).hex, "ffffffffffffffff")
     }
     
+    func testHexUtils4() {
+        XCTAssertEqual(HexData(hex: "0011223344")!.hex, "0011223344")
+    }
+    
     func testIntUtils1() {
         let i: UInt64 = 0x123456789abcdef0
         let d = serialize(i)

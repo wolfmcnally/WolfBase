@@ -71,3 +71,41 @@ extension FixedWidthInteger {
         }
     }
 }
+
+/// Wrapper for `Data` that encodes, decodes, and prints as hex.
+public struct HexData: Codable, CustomStringConvertible, Equatable {
+    public let data: Data
+    
+    public init(_ data: Data) {
+        self.data = data
+    }
+    
+    public init?(hex: String) {
+        guard let data = hex.hexData else {
+            return nil
+        }
+        self.init(data)
+    }
+    
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.singleValueContainer()
+        try container.encodeHex(data: data)
+    }
+    
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.singleValueContainer()
+        self.data = try container.decodeHex()
+    }
+    
+    public var hex: String {
+        data.hex
+    }
+    
+    public var description: String {
+        hex
+    }
+    
+    public static func ==(lhs: HexData, rhs: HexData) -> Bool {
+        lhs.data == rhs.data
+    }
+}
