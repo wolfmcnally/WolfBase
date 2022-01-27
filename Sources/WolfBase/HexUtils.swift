@@ -89,12 +89,16 @@ public struct HexData: Codable, CustomStringConvertible, Equatable {
     
     public func encode(to encoder: Encoder) throws {
         var container = encoder.singleValueContainer()
-        try container.encodeHex(data: data)
+        try container.encode(data.hex)
     }
     
     public init(from decoder: Decoder) throws {
         let container = try decoder.singleValueContainer()
-        self.data = try container.decodeHex()
+        let string = try container.decode(String.self)
+        guard let data = string.hexData else {
+            throw DecodingError.dataCorrupted(.init(codingPath: container.codingPath, debugDescription: "Invalid hex.", underlyingError: nil))
+        }
+        self.data = data
     }
     
     public var hex: String {
