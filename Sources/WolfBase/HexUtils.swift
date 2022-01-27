@@ -73,7 +73,7 @@ extension FixedWidthInteger {
 }
 
 /// Wrapper for `Data` that encodes, decodes, and prints as hex.
-public struct HexData: Codable, CustomStringConvertible, Equatable {
+public struct HexData: Codable, CustomStringConvertible, Hashable {
     public let data: Data
     
     public init(_ data: Data) {
@@ -108,8 +108,28 @@ public struct HexData: Codable, CustomStringConvertible, Equatable {
     public var description: String {
         hex
     }
+}
+
+/// Wrapper for `Date` that encodes and decodes as the interval since the Unix epoch.
+public struct UnixEpochDate: Codable, CustomStringConvertible, Hashable {
+    public let date: Date
     
-    public static func ==(lhs: HexData, rhs: HexData) -> Bool {
-        lhs.data == rhs.data
+    public init(_ date: Date) {
+        self.date = date
+    }
+    
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.singleValueContainer()
+        try container.encode(date.timeIntervalSince1970)
+    }
+    
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.singleValueContainer()
+        let interval = try container.decode(TimeInterval.self)
+        self.date = Date(timeIntervalSince1970: interval)
+    }
+    
+    public var description: String {
+        date.description
     }
 }
