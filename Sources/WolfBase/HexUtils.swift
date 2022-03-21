@@ -110,6 +110,12 @@ public struct HexData: Codable, CustomStringConvertible, Hashable {
     }
 }
 
+extension HexData: DataProvider {
+    public var providedData: Data {
+        data
+    }
+}
+
 /// Wrapper for `Date` that encodes and decodes as the interval since the Unix epoch.
 public struct UnixEpochDate: Codable, CustomStringConvertible, Hashable {
     public let date: Date
