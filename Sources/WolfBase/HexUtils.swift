@@ -72,6 +72,17 @@ extension FixedWidthInteger {
     }
 }
 
+///
+/// Hex-To-Data-Operator
+///
+/// ‡ DOUBLE DAGGER, Command-Shift-7
+///
+prefix operator ‡
+
+public prefix func ‡ (hex: String) -> Data {
+    return hex.hexData!
+}
+
 /// Wrapper for `Data` that encodes, decodes, and prints as hex.
 public struct HexData: Codable, CustomStringConvertible, Hashable {
     public let data: Data
