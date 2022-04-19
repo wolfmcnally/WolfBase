@@ -34,6 +34,16 @@ extension Date {
     public init(year: Int, month: Int, day: Int, hour: Int = 0, minute: Int = 0, second: Int = 0) {
         self = DateComponents(calendar: Calendar(identifier: .gregorian), timeZone: TimeZone.init(identifier: "GMT"), year: year, month: month, day: day, hour: hour, minute: minute, second: second).date!
     }
+    
+    @available(macOS 12.0, *)
+    public init(iso8601 s: String) throws {
+        // 2022-01-01
+        var s = s
+        if s.count == 10 {
+            s += "T00:00:00Z"
+        }
+        self = try Date(s, strategy: .iso8601)
+    }
 }
 
 public func deserialize<T, D>(_ t: T.Type, _ data: D) -> Date? where T : DateTag, D : DataProtocol {

@@ -24,4 +24,10 @@ extension Array {
             Array(self[$0 ..< Swift.min($0 + size, count)])
         }
     }
+    
+    public func appending(_ element: Element) -> Self {
+        var a = self
+        a.append(element)
+        return a
+    }
 }
