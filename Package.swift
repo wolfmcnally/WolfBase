@@ -1,12 +1,12 @@
-// swift-tools-version:5.5
+// swift-tools-version:5.6
 
 import PackageDescription
 
 let package = Package(
     name: "WolfBase",
     platforms: [
-        .iOS(.v13),
-        .macOS(.v10_15)
+        .iOS(.v15),
+        .macOS(.v12)
     ],
     products: [
         .library(
