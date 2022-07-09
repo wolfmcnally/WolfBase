@@ -346,16 +346,23 @@ final class WolfBaseTests: XCTestCase {
     
     func testStringFloatPrecision() {
         let f = 1234.5678
-        let us = Locale(identifier: "us")
-        let uk = Locale(identifier: "uk")
+        let us = Locale(identifier: "en_US")
+        let uk = Locale(identifier: "UK")
         
-        XCTAssertEqual(String(f, precision: 2, locale: us), "1234.57")
-        XCTAssertEqual(String(f, precision: 2, locale: uk), "1234,57")
+        XCTAssertEqual(String(f, precision: 2, locale: us), "1,234.57")
+        XCTAssertEqual(String(f, precision: 2, locale: us, usesGroupingSeparator: false), "1234.57")
+        XCTAssertEqual(String(f, precision: 2, locale: uk), "1 234,57")
+        XCTAssertEqual(String(f, precision: 2), "1234.57")
         XCTAssertEqual(String(f, precision: 0), "1235")
+        XCTAssertEqual(String(f, minPrecision: 5), "1234.56780")
         
-        XCTAssertEqual(f %% (2, us), "1234.57")
-        XCTAssertEqual(f %% (2, uk), "1234,57")
+        XCTAssertEqual(f %% (2, us), "1,234.57")
+        XCTAssertEqual(f %% (2, uk), "1 234,57")
+        XCTAssertEqual(f %% 2, "1234.57")
         XCTAssertEqual(f %% 0, "1235")
+        
+        XCTAssertEqual("\(f, precision: 2, locale: us)", "1,234.57")
+        XCTAssertEqual("\(f, minPrecision: 5, locale: uk)", "1 234,56780")
     }
     
     func testUTF8Utils() {

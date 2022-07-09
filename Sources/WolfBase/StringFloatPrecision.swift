@@ -19,20 +19,51 @@
 import Foundation
 
 extension String {
-    public init(_ value: Double, precision: Int, locale: Locale? = nil) {
+    public init(_ value: Double, precision: Int, minPrecision: Int = 0, locale: Locale? = nil, usesGroupingSeparator: Bool? = nil) {
         let formatter = NumberFormatter()
+        formatter.numberStyle = .decimal
         if let locale = locale {
             formatter.locale = locale
+            if let usesGroupingSeparator {
+                formatter.usesGroupingSeparator = usesGroupingSeparator
+            }
+        } else {
+            formatter.localizesFormat = false
+            formatter.usesGroupingSeparator = usesGroupingSeparator ?? false
         }
-        formatter.numberStyle = .decimal
-        formatter.usesGroupingSeparator = false
-        formatter.minimumFractionDigits = 0
+        formatter.minimumFractionDigits = minPrecision
         formatter.maximumFractionDigits = precision
-        self.init(formatter.string(from: NSNumber(value: value))!)
+        self.init(formatter.string(from: value as NSNumber)!)
+    }
+    
+    public init(_ value: Double, minPrecision: Int, locale: Locale? = nil, usesGroupingSeparator: Bool? = nil) {
+        self.init(value, precision: 5, minPrecision: minPrecision, locale: locale, usesGroupingSeparator: usesGroupingSeparator)
     }
 
-    public init(_ value: Float, precision: Int, locale: Locale? = nil) {
-        self.init(Double(value), precision: precision, locale: locale)
+    public init(_ value: Float, precision: Int, minPrecision: Int = 0, locale: Locale? = nil, usesGroupingSeparator: Bool? = nil) {
+        self.init(Double(value), precision: precision, minPrecision: minPrecision, locale: locale, usesGroupingSeparator: usesGroupingSeparator)
+    }
+
+    public init(_ value: Float, minPrecision: Int, locale: Locale? = nil, usesGroupingSeparator: Bool? = nil) {
+        self.init(Double(value), minPrecision: minPrecision, locale: locale, usesGroupingSeparator: usesGroupingSeparator)
+    }
+}
+
+public extension String.StringInterpolation {
+    mutating func appendInterpolation(_ value: Double, precision: Int, minPrecision: Int = 0, locale: Locale? = nil, usesGroupingSeparator: Bool? = nil) {
+        appendLiteral(String(value, precision: precision, minPrecision: minPrecision, locale: locale, usesGroupingSeparator: usesGroupingSeparator))
+    }
+    
+    mutating func appendInterpolation(_ value: Double, minPrecision: Int, locale: Locale? = nil, usesGroupingSeparator: Bool? = nil) {
+        appendInterpolation(value, precision: 5, minPrecision: minPrecision, locale: locale, usesGroupingSeparator: usesGroupingSeparator)
+    }
+    
+    mutating func appendInterpolation(_ value: Float, precision: Int, minPrecision: Int = 0, locale: Locale? = nil, usesGroupingSeparator: Bool? = nil) {
+        appendLiteral(String(value, precision: precision, minPrecision: minPrecision, locale: locale, usesGroupingSeparator: usesGroupingSeparator))
+    }
+
+    mutating func appendInterpolation(_ value: Float, minPrecision: Int, locale: Locale? = nil, usesGroupingSeparator: Bool? = nil) {
+        appendInterpolation(value, precision: 5, minPrecision: minPrecision, locale: locale, usesGroupingSeparator: usesGroupingSeparator)
     }
 }
 
@@ -45,6 +76,10 @@ precedencegroup AttributeAssignmentPrecedence {
 infix operator %% : AttributeAssignmentPrecedence
 
 public func %% (value: Double, f: (precision: Int, locale: Locale)) -> String {
+    return String(value, precision: f.precision, locale: f.locale)
+}
+
+public func %% (value: Float, f: (precision: Int, locale: Locale)) -> String {
     return String(value, precision: f.precision, locale: f.locale)
 }
 
