@@ -28,7 +28,9 @@ extension String {
                 formatter.usesGroupingSeparator = usesGroupingSeparator
             }
         } else {
+            #if os(macOS)
             formatter.localizesFormat = false
+            #endif
             formatter.usesGroupingSeparator = usesGroupingSeparator ?? false
         }
         formatter.minimumFractionDigits = minPrecision
