@@ -24,7 +24,7 @@ extension String {
         formatter.numberStyle = .decimal
         if let locale = locale {
             formatter.locale = locale
-            if let usesGroupingSeparator {
+            if let usesGroupingSeparator = usesGroupingSeparator {
                 formatter.usesGroupingSeparator = usesGroupingSeparator
             }
         } else {
