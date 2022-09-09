@@ -1,9 +1,11 @@
 import Foundation
 
-public func todo() -> Never {
-    fatalError("To do.")
+@_transparent
+public func todo(file: StaticString = #file, line: UInt = #line) -> Never {
+    fatalError("todo", file: file, line: line)
 }
 
-public func unimplemented() -> Never {
-    fatalError("Unimplemented.")
+@_transparent
+public func unimplemented(file: StaticString = #file, line: UInt = #line) -> Never {
+    fatalError("unimplemented", file: file, line: line)
 }
