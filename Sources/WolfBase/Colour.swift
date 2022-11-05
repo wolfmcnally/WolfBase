@@ -23,38 +23,69 @@ public enum ColourError: Error {
     case invalidColourStringFormat
 }
 
-// This type is named `Colour` using the British spelling to distinguish it from `SwiftUI.Color`
+/// A color described by its ``Colour/red-swift.type.property``, ``Colour/green-swift.type.property``, ``Colour/blue-swift.type.property``, and ``Colour/alpha`` components.
+///
+/// This type is named `Colour` using the British spelling to distinguish it from `SwiftUI.Color`
 public struct Colour {
+    /// The SIMD representation of this color.
     public var c: SIMD4<Double>
 
+    /// The red component of this color.
+    ///
+    /// The normal range of this component is 0...1.
     @inlinable public var red: Double {
         get { c[0] }
         set { c[0] = newValue }
     }
 
+    /// The green component of this color.
+    ///
+    /// The normal range of this component is 0...1.
     @inlinable public var green: Double {
         get { c[1] }
         set { c[1] = newValue }
     }
 
+    /// The blue component of this color.
+    ///
+    /// The normal range of this component is 0...1.
     @inlinable public var blue: Double {
         get { c[2] }
         set { c[2] = newValue }
     }
 
+    /// The alpha component of this color.
+    ///
+    /// The normal range of this component is 0...1.
     @inlinable public var alpha: Double {
         get { c[3] }
         set { c[3] = newValue }
     }
 
+    /// Creates a color with the given SIMD representation.
     @inlinable public init(c: SIMD4<Double>) {
         self.c = c
     }
 
+    /// Creates a color with the given component floating point values values in the range 0.0...1.0.
+    ///
+    /// - Parameters:
+    ///   - red: The red component.
+    ///   - green: The green component.
+    ///   - blue: The blue component.
+    ///   - alpha: The alpha component.
     @inlinable public init(red: Double, green: Double, blue: Double, alpha: Double = 1.0) {
         c = [red, green, blue, alpha]
     }
 
+    
+    /// Creates a color with the given component byte values in the range 0...255.
+    ///
+    /// - Parameters:
+    ///   - redByte: The red component.
+    ///   - greenByte: The green component.
+    ///   - blueByte: The blue component.
+    ///   - alphaByte: The alpha component.
     @inlinable public init(redByte: UInt8, greenByte: UInt8, blueByte: UInt8, alphaByte: UInt8 = 255) {
         let red = Double(redByte) / 255.0
         let green = Double(greenByte) / 255.0
@@ -62,11 +93,23 @@ public struct Colour {
         let alpha = Double(alphaByte) / 255.0
         c = [red, green, blue, alpha]
     }
-
+    
+    /// Creates a grayscale color with the given components.
+    ///
+    /// - Parameters:
+    ///   - white: The white component, where 0 is black and 1 is white.
+    ///   - alpha: The alpha component.
     @inlinable public init(white: Double, alpha: Double = 1.0) {
         c = [white, white, white, alpha]
     }
-
+    
+    /// Creates a color with the byte values in the given `Data` value.
+    ///
+    /// If the `Data` value has exactly three bytes in it, they are taken as the red,
+    /// green, and blue components of the color and the alpha value is set to 1.0. If it
+    /// has four or more bytes, the fourth byte (index 3) is taken as the alpha value.
+    ///
+    /// - Parameter data: The data to take component values from.
     @inlinable public init(data: Data) {
         let r = data[0]
         let g = data[1]
@@ -74,7 +117,12 @@ public struct Colour {
         let a = data.count >= 4 ? data[3] : 255
         self.init(redByte: r, greenByte: g, blueByte: b, alphaByte: a)
     }
-
+    
+    /// Creates a color by copying a given color and replacing its alpha value with the one provided.
+    ///
+    /// - Parameters:
+    ///   - colour: The color to copy.
+    ///   - alpha: The alpha value to use for the new color.
     @inlinable public init(colour: Colour, alpha: Double) {
         c = [colour.red, colour.green, colour.blue, alpha]
     }
@@ -179,7 +227,28 @@ extension Colour {
             }
         }
     }
-
+    
+    /// Creates a color from the given `String` description.
+    ///
+    /// The following formats are supported:
+    ///
+    /// * Single digit hex, with or without leading `#`
+    ///   * `#fff`
+    ///   * `888`
+    /// * Double digit hex, with or without leading `#`
+    ///   * `#ffffff`
+    ///   * `888888`
+    /// * Floating point components, with or without an alpha channel
+    ///   * `1 0 0 1`
+    ///   * `0.0 1.0 1.0`
+    /// * Labeled component fields, either single character or complete word
+    ///   * `r: .1 g: 0.512 b: 0.9`
+    ///   * `red: .1 green: 0.512 blue: 0.9 alpha: 1`
+    /// * Labeled HSB components
+    ///   * `h: .1 s: 0.512 b: 0.9`
+    ///   * `hue: .1 saturation: 0.512 brightness: 0.9 alpha: 1.0`
+    ///
+    /// - Parameter string: The string to convert to a color.
     public init(string s: String) throws {
         var components: [Double] = [0.0, 0.0, 0.0, 1.0]
         var isHSB = false
@@ -208,6 +277,9 @@ extension Colour {
 }
 
 extension Colour {
+    /// Create a random color.
+    /// - Parameter alpha: The alpha value for the new color.
+    /// - Returns: The newly created color.
     public static func random(alpha: Double = 1.0) -> Colour {
         Colour(
             red: Double.random(in: 0...1),
@@ -216,7 +288,12 @@ extension Colour {
             alpha: alpha
         )
     }
-
+    
+    /// Create a random color.
+    /// - Parameters:
+    ///   - alpha: The alpha value for the new color.
+    ///   - generator: The `RandomNumberGenerator` to use.
+    /// - Returns: The newly created color.
     public static func random<T>(alpha: Double = 1.0, using generator: inout T) -> Colour where T: RandomNumberGenerator {
         Colour(
             red: Double.random(in: 0...1, using: &generator),
@@ -227,25 +304,58 @@ extension Colour {
     }
 }
 
-extension Colour {
-    // NOTE: Not gamma-corrected
-    public var luminance: Double {
+public extension Colour {
+    /// The color's luminance.
+    ///
+    /// This uses the non gamma-corrected formula:
+    ///
+    /// ```
+    /// red * 0.2126 + green * 0.7152 + blue * 0.0722
+    /// ```
+    ///
+    var luminance: Double {
         red * 0.2126 + green * 0.7152 + blue * 0.0722
     }
 
-    public func withAlphaComponent(_ alpha: Double) -> Colour {
+    /// Returns this color with the ``alpha`` values replaced by the one provided.
+    /// - Parameter alpha: The alpha of the new color.
+    /// - Returns: The modified color.
+    func withAlphaComponent(_ alpha: Double) -> Colour {
         Colour(colour: self, alpha: alpha)
     }
-
-    public func multiplied(by rhs: Double) -> Colour {
+    
+    /// Returns this color with its color components multiplied by the given
+    /// coefficient.
+    ///
+    /// Simply copies this color's ``alpha`` component.
+    ///
+    /// - Parameter rhs: The coefficient by which to multiply the color components.
+    /// - Returns: The modified color.
+    func multiplied(by rhs: Double) -> Colour {
         Colour(red: red * rhs, green: green * rhs, blue: blue * rhs, alpha: alpha)
     }
-
-    public func added(to rhs: Colour) -> Colour {
+    
+    /// Returns this color with each of its color components added to corresponding
+    /// components of the the color provided.
+    ///
+    /// Simply copies this color's alpha component.
+    ///
+    /// - Parameter rhs: The color to add to this color.
+    /// - Returns: The modified color.
+    func added(to rhs: Colour) -> Colour {
         Colour(red: red + rhs.red, green: green + rhs.green, blue: blue + rhs.blue, alpha: alpha)
     }
-
-    public static func blend(from: Colour, to: Colour) -> (Double) -> Colour {
+    
+    /// Returns an interpolation function that blends between two colors.
+    ///
+    /// The returned function takes a value from 0...1 and returns the interpolated
+    /// color at that position.
+    ///
+    /// - Parameters:
+    ///   - from: The color at the start of the blend.
+    ///   - to: The color at the end of the blend.
+    /// - Returns: The interpolation function.
+    static func blend(from: Colour, to: Colour) -> (Double) -> Colour {
         {
             Colour(
                 red: (from.red..to.red).scale($0),
@@ -255,20 +365,39 @@ extension Colour {
         }
     }
 
-    public func blend(to: Colour) -> (Double) -> Colour {
+    /// Returns an interpolation function that blends between this color and the one
+    /// provided.
+    ///
+    /// The returned function takes a value from 0...1 and returns the interpolated
+    /// color at that position.
+    ///
+    /// - Parameter to: The color at the end of the blend.
+    /// - Returns: The interpolation function.
+    func blend(to: Colour) -> (Double) -> Colour {
         Self.blend(from: self, to: to)
     }
     
-    public func lighten() -> (Double) -> Colour {
+    /// Returns an interpolation function that blends between this color and white.
+    ///
+    /// - Returns: The interpolation function.
+    func lighten() -> (Double) -> Colour {
         blend(to: .white)
     }
     
-    public func darken() -> (Double) -> Colour {
+    /// Returns an interpolation function that blends between this color and black.
+    ///
+    /// - Returns: The interpolation function.
+    func darken() -> (Double) -> Colour {
         blend(to: .black)
     }
 
-    /// Identity fraction is 0.0
-    public func dodge() -> (Double) -> Colour {
+    /// Returns an interpolation function that applies the
+    /// [Color Dodge](https://en.wikipedia.org/wiki/Blend_modes#Dodge_and_burn) function.
+    ///
+    /// The identity fraction is 0.0.
+    ///
+    /// - Returns: The interpolation function.
+    func dodge() -> (Double) -> Colour {
         {
             let f = max(1.0 - $0, 1.0e-7)
             return Colour(
@@ -279,8 +408,13 @@ extension Colour {
         }
     }
 
-    /// Identity fraction is 0.0
-    public func burn() -> (Double) -> Colour {
+    /// Returns an interpolation function that applies the
+    /// [Color Burn](https://en.wikipedia.org/wiki/Blend_modes#Dodge_and_burn) function.
+    ///
+    /// The identity fraction is 0.0.
+    ///
+    /// - Returns: The interpolation function.
+    func burn() -> (Double) -> Colour {
         {
             let f = max(1.0 - $0, 1.0e-7)
             return Colour(
@@ -320,7 +454,14 @@ extension Colour {
 
 extension Colour: ExpressibleByArrayLiteral {
     public typealias ArrayLiteralElement = Double
-
+    
+    /// Creates a color from the given array literal.
+    ///
+    /// If the array literal has exactly three elements, then they are taken as the ``Colour/red-swift.property``, ``Colour/green-swift.property``, and ``Colour/blue-swift.property`` components, and the ``Colour/alpha`` component is set to 1.0.
+    /// The the array literal has exactly four components, then the fourth element (index 3) is taken as the alpha value.
+    /// It is an error for the array literal to contain less than three or more than four elements.
+    ///
+    /// - Parameter elements: The color components.
     public init(arrayLiteral elements: Double...) {
         if elements.count == 3 {
             c = SIMD4<Double>(elements[0], elements[1], elements[2], 1.0)
@@ -335,6 +476,7 @@ extension Colour: ExpressibleByArrayLiteral {
 extension Colour: Equatable { }
 
 extension Interval where Bound == Colour {
+    /// Returns an interpolation function that interpolates between the ``Colour``s at the limits of the ``Interval``.
     @inlinable public var scale: (Double) -> Colour {
         Colour.blend(from: a, to: b)
     }
@@ -347,6 +489,7 @@ extension Colour: CustomStringConvertible {
 }
 
 extension Colour {
+    /// Returns a string describing the color suitable for debugging use.
     public var debugSummary: String {
         var result: [String] = []
         var needAlpha = true
@@ -391,6 +534,7 @@ extension Colour {
 }
 
 extension Colour {
+    /// Returns the color with its components all clamped into the range 0...1.
     @inlinable public func clamped() -> Colour {
         Colour(c: self.c.clamped(lowerBound: .zero, upperBound: .one))
     }
