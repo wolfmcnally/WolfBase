@@ -2,7 +2,7 @@ import Foundation
 
 public protocol SeedableRandomNumberGenerator: RandomNumberGenerator {
     associatedtype State
-    init(seed: State)
+    init(state: State)
     init<Source: RandomNumberGenerator>(from source: inout Source)
 }
 
@@ -25,9 +25,9 @@ public struct Xoroshiro256StarStar: SeedableRandomNumberGenerator {
     public typealias State = (UInt64, UInt64, UInt64, UInt64)
     public var state: State
 
-    public init(seed: State) {
-        precondition(seed != (0, 0, 0, 0))
-        state = seed
+    public init(state: State) {
+        precondition(state != (0, 0, 0, 0))
+        self.state = state
     }
 
     private static func rotl(_ x: UInt64, _ k: UInt64) -> UInt64 {
