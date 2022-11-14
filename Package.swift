@@ -14,11 +14,14 @@ let package = Package(
             targets: ["WolfBase"]),
     ],
     dependencies: [
+        .package(url: "https://github.com/apple/swift-algorithms.git", from: "1.0.0"),
     ],
     targets: [
         .target(
             name: "WolfBase",
-            dependencies: []),
+            dependencies: [
+                .product(name: "Algorithms", package: "swift-algorithms"),
+            ]),
         .testTarget(
             name: "WolfBaseTests",
             dependencies: ["WolfBase"]),
