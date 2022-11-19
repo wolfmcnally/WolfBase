@@ -19,10 +19,18 @@
 import Foundation
 
 extension Encodable {
-    public var json: Data {
+    public func json(outputFormatting: JSONEncoder.OutputFormatting = []) -> Data {
         let encoder = JSONEncoder()
-        encoder.outputFormatting = .sortedKeys
+        encoder.outputFormatting = outputFormatting
         return try! encoder.encode(self)
+    }
+    
+    public func jsonString(outputFormatting: JSONEncoder.OutputFormatting = []) -> String {
+        json(outputFormatting: outputFormatting).utf8!
+    }
+    
+    public var json: Data {
+        json(outputFormatting: .sortedKeys)
     }
 
     public var jsonString: String {
