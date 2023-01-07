@@ -20,6 +20,7 @@
 import Foundation
 import CryptoKit
 
+@available(macOS 10.15, *)
 @available(iOS 13.0, *)
 extension SHA256Digest {
     public var data: Data { withUnsafeBytes { Data(bytes: $0.baseAddress!, count: SHA256Digest.byteCount) } }
@@ -27,6 +28,7 @@ extension SHA256Digest {
 }
 
 @available(iOS 13.0, *)
+@available(macOS 10.15, *)
 extension Data {
     public var sha256Digest: Data {
         SHA256.hash(data: self).data

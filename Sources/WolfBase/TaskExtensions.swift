@@ -18,6 +18,7 @@
 
 import Foundation
 
+@available(macOS 10.15, *)
 extension Task where Failure == Never, Success == Never {
     public static func sleep(seconds: TimeInterval) async throws {
         try await Task.sleep(nanoseconds: toNanoseconds(seconds: seconds))

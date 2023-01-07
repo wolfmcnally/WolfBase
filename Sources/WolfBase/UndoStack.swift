@@ -1,5 +1,6 @@
 import SwiftUI
 
+@available(macOS 10.15, *)
 public class UndoStack: ObservableObject {
     @Published public var canUndo = false
     @Published public var canRedo = false
