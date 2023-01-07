@@ -18,6 +18,9 @@
 
 import Foundation
 
+@available(watchOS 6.0, *)
+@available(tvOS 13.0.0, *)
+@available(iOS 13.0, *)
 @available(macOS 10.15, *)
 extension Task where Failure == Never, Success == Never {
     public static func sleep(seconds: TimeInterval) async throws {

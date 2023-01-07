@@ -35,6 +35,9 @@ extension Date {
         self = DateComponents(calendar: Calendar(identifier: .gregorian), timeZone: TimeZone.init(identifier: "GMT"), year: year, month: month, day: day, hour: hour, minute: minute, second: second).date!
     }
     
+    @available(watchOS 8.0, *)
+    @available(tvOS 15.0, *)
+    @available(iOS 15.0, *)
     @available(macOS 12.0, *)
     public init(iso8601 s: String) throws {
         // 2022-01-01

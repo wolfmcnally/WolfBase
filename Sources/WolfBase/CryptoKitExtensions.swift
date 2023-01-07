@@ -20,6 +20,8 @@
 import Foundation
 import CryptoKit
 
+@available(watchOS 6.0, *)
+@available(tvOS 13.0, *)
 @available(macOS 10.15, *)
 @available(iOS 13.0, *)
 extension SHA256Digest {
@@ -27,6 +29,8 @@ extension SHA256Digest {
     public var hex: String { data.hex }
 }
 
+@available(watchOS 6.0, *)
+@available(tvOS 13.0, *)
 @available(iOS 13.0, *)
 @available(macOS 10.15, *)
 extension Data {

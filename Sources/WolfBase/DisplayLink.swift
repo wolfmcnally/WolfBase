@@ -1,6 +1,7 @@
 #if canImport(UIKit)
 import UIKit
 
+#if !os(watchOS)
 public class DisplayLink {
     private var displayLink: CADisplayLink!
     private let onFrame: (DisplayLink) -> Void
@@ -41,5 +42,6 @@ public class DisplayLink {
         set { displayLink.preferredFramesPerSecond = newValue }
     }
 }
+#endif
 
 #endif

@@ -20,15 +20,15 @@
 
 import SwiftUI
 
+@available(watchOS 6.0, *)
+@available(tvOS 13.0, *)
+@available(iOS 13.0, *)
 @available(macOS 10.15, *)
 extension Color {
     public init(_ colorSpace: Color.RGBColorSpace = .sRGB, colour c: Colour) {
         self.init(colorSpace, red: c.red, green: c.green, blue: c.blue, opacity: c.alpha)
     }
-}
-
-@available(macOS 10.15, *)
-extension Color {
+    
     public init(hsbColour c: HSBColour) {
         self.init(hue: c.hue, saturation: c.saturation, brightness: c.brightness, opacity: c.alpha)
     }
