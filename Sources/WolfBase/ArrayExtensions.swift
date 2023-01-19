@@ -25,9 +25,15 @@ extension Array {
         }
     }
     
-    public func appending(_ element: Element) -> Self {
+    public func appending(_ newElement: Element) -> Self {
         var a = self
-        a.append(element)
+        a.append(newElement)
+        return a
+    }
+    
+    public func appending<S: Sequence>(contentsOf newElements: S) -> Self where S.Element == Element {
+        var a = self
+        a.append(contentsOf: newElements)
         return a
     }
 }
