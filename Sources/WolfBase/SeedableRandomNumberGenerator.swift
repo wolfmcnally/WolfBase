@@ -21,7 +21,7 @@ public extension RandomNumberGenerator {
     }
 }
 
-public struct Xoroshiro256StarStar: SeedableRandomNumberGenerator {
+public struct Xoshiro256StarStar: SeedableRandomNumberGenerator {
     public typealias State = (UInt64, UInt64, UInt64, UInt64)
     public var state: State
 
