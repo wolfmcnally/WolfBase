@@ -23,13 +23,13 @@ public class UndoStack: ObservableObject {
         }
     }
     
-    public func perform(_ action: @escaping () -> Void, undo: @escaping () -> Void) {
+    public func perform(_ action: @Sendable @escaping () -> Void, undo: @Sendable @escaping () -> Void) {
         redoActions.removeAll()
         action()
         undoActions.append(Action(undo: undo, redo: action))
     }
     
-    public func push(_ action: @escaping () -> Void, undo: @escaping () -> Void) {
+    public func push(_ action: @Sendable @escaping () -> Void, undo: @Sendable @escaping () -> Void) {
         redoActions.removeAll()
         undoActions.append(Action(undo: undo, redo: action))
     }
@@ -63,11 +63,11 @@ public class UndoStack: ObservableObject {
         redoActions.removeAll()
     }
 
-    public struct Action {
-        let undo: () -> Void
-        let redo: () -> Void
+    public struct Action : Sendable {
+        let undo: @Sendable () -> Void
+        let redo: @Sendable () -> Void
         
-        public init(undo: @escaping () -> Void, redo: @escaping () -> Void) {
+        public init(undo: @Sendable @escaping () -> Void, redo: @Sendable @escaping () -> Void) {
             self.undo = undo
             self.redo = redo
         }

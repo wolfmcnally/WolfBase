@@ -26,11 +26,11 @@ import UIKit
 import AppKit
 #endif
 
-public var sharedColorSpaceRGB = CGColorSpaceCreateDeviceRGB()
-public var sharedColorSpaceGray = CGColorSpaceCreateDeviceGray()
-public var sharedWhiteColor = CGColor(colorSpace: sharedColorSpaceGray, components: [CGFloat(1.0), CGFloat(1.0)])
-public var sharedBlackColor = CGColor(colorSpace: sharedColorSpaceGray, components: [CGFloat(0.0), CGFloat(1.0)])
-public var sharedClearColor = CGColor(colorSpace: sharedColorSpaceGray, components: [CGFloat(0.0), CGFloat(0.0)])
+public let sharedColorSpaceRGB = CGColorSpaceCreateDeviceRGB()
+public let sharedColorSpaceGray = CGColorSpaceCreateDeviceGray()
+public let sharedWhiteColor = CGColor(colorSpace: sharedColorSpaceGray, components: [CGFloat(1.0), CGFloat(1.0)])
+public let sharedBlackColor = CGColor(colorSpace: sharedColorSpaceGray, components: [CGFloat(0.0), CGFloat(1.0)])
+public let sharedClearColor = CGColor(colorSpace: sharedColorSpaceGray, components: [CGFloat(0.0), CGFloat(0.0)])
 
 extension CGColor {
     public func toRGB() -> CGColor {

@@ -76,7 +76,7 @@ extension CFRange {
     }
 }
 
-extension CFRange: Equatable {
+extension CFRange: @retroactive Equatable {
     public static func ==(lhs: CFRange, rhs: CFRange) -> Bool {
         lhs.location == rhs.location && lhs.length == rhs.length
     }

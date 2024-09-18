@@ -1,8 +1,9 @@
-import XCTest
+import Testing
 import WolfBase
+import Foundation
 
-final class MiscTests: XCTestCase {
-    func testByteBufferUtils() {
+struct MiscTests {
+    @Test func testByteBufferUtils() {
         struct A: Equatable {
             let a: UInt8
             let b: UInt8
@@ -13,10 +14,10 @@ final class MiscTests: XCTestCase {
         let a = A(a: 10, b: 20, c: 30, d: 40)
         
         let x = withUnsafeByteBuffer(of: a) { unsafeBufferPointer -> Bool in
-            XCTAssertEqual(Array(unsafeBufferPointer), [10, 20, 30, 40])
+            #expect(Array(unsafeBufferPointer) == [10, 20, 30, 40])
             return true
         }
-        XCTAssertTrue(x)
+        #expect(x)
         
         var b = A(a: 50, b: 60, c: 70, d: 80)
         
@@ -27,11 +28,11 @@ final class MiscTests: XCTestCase {
             unsafeMutableBufferPointer[3] = 40
             return true
         }
-        XCTAssertTrue(y)
-        XCTAssertEqual(a, b)
+        #expect(y)
+        #expect(a == b)
     }
     
-    func testCodableExtensions() throws {
+    @Test func testCodableExtensions() throws {
         struct A: Codable, Equatable {
             let a: String
             let b: Int
@@ -41,79 +42,79 @@ final class MiscTests: XCTestCase {
         let s = #"{"a":"Hello","b":10}"#
         let d = a.json
         
-        XCTAssertEqual(a.jsonString, s)
-        XCTAssertEqual(s.utf8Data, a.json)
-        try XCTAssertEqual(fromJSON(A.self, a.json), a)
-        try XCTAssertEqual(fromJSON(A.self, a.jsonString), a)
-        try XCTAssertEqual(A.fromJSON(d), a)
-        try XCTAssertEqual(A.fromJSON(s), a)
-        try XCTAssertEqual(d.fromJSON(to: A.self), a)
-        try XCTAssertEqual(s.fromJSON(to: A.self), a)
+        #expect(a.jsonString == s)
+        #expect(s.utf8Data == a.json)
+        try #expect(fromJSON(A.self, a.json) == a)
+        try #expect(fromJSON(A.self, a.jsonString) == a)
+        try #expect(A.fromJSON(d) == a)
+        try #expect(A.fromJSON(s) == a)
+        try #expect(d.fromJSON(to: A.self) == a)
+        try #expect(s.fromJSON(to: A.self) == a)
     }
 
-    func testOptionalExtensions() {
+    @Test func testOptionalExtensions() {
         let a: String? = "Hello"
         let b: String? = nil
-        XCTAssertTrue(a.isSome)
-        XCTAssertFalse(a.isNone)
-        XCTAssertFalse(b.isSome)
-        XCTAssertTrue(b.isNone)
-        XCTAssertEqual(a.unwrap() as! String, "Hello")
-        XCTAssertEqual(a.unwrap(String.self), "Hello")
-        XCTAssertEqual(unwrap(a) as! String, "Hello")
-        XCTAssertEqual(unwrap(String.self, a), "Hello")
-        XCTAssertEqual(a†, "Hello")
-        XCTAssertEqual(b†, "nil")
+        #expect(a.isSome)
+        #expect(!a.isNone)
+        #expect(!b.isSome)
+        #expect(b.isNone)
+        #expect(a.unwrap() as! String == "Hello")
+        #expect(a.unwrap(String.self) == "Hello")
+        #expect(unwrap(a) as! String == "Hello")
+        #expect(unwrap(String.self, a) == "Hello")
+        #expect(a† == "Hello")
+        #expect(b† == "nil")
     }
     
-    func testRangeExtensions() {
+    @Test func testRangeExtensions() {
         let cfRange = CFRange(location: 10, length: 20)
         let nsRange = NSRange(location: 10, length: 20)
         let range = 10 ..< 30
         
-        XCTAssertEqual(NSRange(range), nsRange)
-        XCTAssertEqual(NSRange(cfRange), nsRange)
+        #expect(NSRange(range) == nsRange)
+        #expect(NSRange(cfRange) == nsRange)
         
-        XCTAssertEqual(CFRange(range), cfRange)
-        XCTAssertEqual(CFRange(nsRange), cfRange)
+        #expect(CFRange(range) == cfRange)
+        #expect(CFRange(nsRange) == cfRange)
         
-        XCTAssertEqual(Range(cfRange), range)
-        XCTAssertEqual(Range(nsRange), range)
+        #expect(Range(cfRange) == range)
+        #expect(Range(nsRange) == range)
     }
     
-    func testDuration() {
+    @Test func testDuration() {
         let d1 = 60 * .seconds
         let d2 = 1 * .minutes
         let d3 = 60_000 * .milliseconds
         let d4 = 1/60 * .hours
 
-        XCTAssertEqual(d1, d2)
-        XCTAssertEqual(d2, d3)
-        XCTAssertEqual(d3, d4)
+        #expect(d1 == d2)
+        #expect(d2 == d3)
+        #expect(d3 == d4)
         
-        XCTAssertEqual(d1, 60)
-        XCTAssertEqual(d2, 60)
-        XCTAssertEqual(d3, 60)
-        XCTAssertEqual(d4, 60)
+        #expect(d1 == 60)
+        #expect(d2 == 60)
+        #expect(d3 == 60)
+        #expect(d4 == 60)
         
-        XCTAssertEqual(d1 / .minutes, 1)
-        XCTAssertEqual(d2 / .minutes, 1)
-        XCTAssertEqual(d3 / .minutes, 1)
-        XCTAssertEqual(d4 / .minutes, 1)
+        #expect(d1 / .minutes == 1)
+        #expect(d2 / .minutes == 1)
+        #expect(d3 / .minutes == 1)
+        #expect(d4 / .minutes == 1)
 
-        XCTAssertEqual(d1 / .milliseconds, 60_000)
-        XCTAssertEqual(d2 / .milliseconds, 60_000)
-        XCTAssertEqual(d3 / .milliseconds, 60_000)
-        XCTAssertEqual(d4 / .milliseconds, 60_000)
+        #expect(d1 / .milliseconds == 60_000)
+        #expect(d2 / .milliseconds == 60_000)
+        #expect(d3 / .milliseconds == 60_000)
+        #expect(d4 / .milliseconds == 60_000)
 
-        XCTAssertEqual(d1 / .hours, 1/60)
-        XCTAssertEqual(d2 / .hours, 1/60)
-        XCTAssertEqual(d3 / .hours, 1/60)
-        XCTAssertEqual(d4 / .hours, 1/60)
+        #expect(d1 / .hours == 1.0/60)
+        #expect(d2 / .hours == 1.0/60)
+        #expect(d3 / .hours == 1.0/60)
+        #expect(d4 / .hours == 1.0/60)
         
-        XCTAssertEqual(scale(domain: .minutes, range: .seconds)(1), 60)
-        XCTAssertEqual(scale(domain: .seconds, range: .minutes)(60), 1)
-        XCTAssertEqual(scale(domain: .milliseconds, range: .seconds)(60_000), 60)
-        XCTAssertEqual(scale(domain: .minutes, range: .hours)(1), 1 / 60)
+        #expect(scale(domain: .minutes, range: .seconds)(1) == 60)
+        #expect(scale(domain: .seconds, range: .minutes)(60) == 1)
+        #expect(scale(domain: .milliseconds, range: .seconds)(60_000) == 60)
+        #expect(scale(domain: .minutes, range: .hours)(1) == 1.0 / 60)
     }
 }

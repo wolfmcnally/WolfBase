@@ -26,7 +26,7 @@ public enum ColourError: Error {
 /// A color described by its ``Colour/red-swift.type.property``, ``Colour/green-swift.type.property``, ``Colour/blue-swift.type.property``, and ``Colour/alpha`` components.
 ///
 /// This type is named `Colour` using the British spelling to distinguish it from `SwiftUI.Color`
-public struct Colour {
+public struct Colour : Sendable {
     /// The SIMD representation of this color.
     public var c: SIMD4<Double>
 

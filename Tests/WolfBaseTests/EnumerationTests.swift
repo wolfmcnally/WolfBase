@@ -1,13 +1,14 @@
-import XCTest
+import Testing
 import WolfBase
+import Foundation
 
-final class EnumerationTests: XCTestCase {
-    func testEnumeration() throws {
+struct EnumerationTests {
+    @Test func testEnumeration() throws {
         let e = HTTPMethod.get
         let d = try JSONEncoder().encode(e)
         let e2 = try JSONDecoder().decode(HTTPMethod.self, from: d)
-        XCTAssertEqual(e, e2)
-        XCTAssertTrue(e2 == .get)
+        #expect(e == e2)
+        #expect(e2 == .get)
     }
 }
 
