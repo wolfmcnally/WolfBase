@@ -1,12 +1,14 @@
 import SwiftUI
+import Observation
 
-@available(watchOS 6.0, *)
-@available(tvOS 13.0, *)
-@available(iOS 13.0, *)
-@available(macOS 10.15, *)
-public class UndoStack: ObservableObject {
-    @Published public var canUndo = false
-    @Published public var canRedo = false
+@available(watchOS 10.0, *)
+@available(tvOS 17.0, *)
+@available(iOS 17.0, *)
+@available(macOS 14.0, *)
+@Observable @MainActor
+public class UndoStack {
+    public var canUndo = false
+    public var canRedo = false
     
     public init() {
     }
@@ -23,13 +25,13 @@ public class UndoStack: ObservableObject {
         }
     }
     
-    public func perform(_ action: @Sendable @escaping () -> Void, undo: @Sendable @escaping () -> Void) {
+    public func perform(_ action: @escaping () -> Void, undo: @escaping () -> Void) {
         redoActions.removeAll()
         action()
         undoActions.append(Action(undo: undo, redo: action))
     }
     
-    public func push(_ action: @Sendable @escaping () -> Void, undo: @Sendable @escaping () -> Void) {
+    public func push(_ action: @escaping () -> Void, undo: @escaping () -> Void) {
         redoActions.removeAll()
         undoActions.append(Action(undo: undo, redo: action))
     }
@@ -39,9 +41,7 @@ public class UndoStack: ObservableObject {
             return
         }
 
-        DispatchQueue.main.async {
-            item.undo()
-        }
+        item.undo()
         
         redoActions.append(item)
     }
@@ -51,9 +51,7 @@ public class UndoStack: ObservableObject {
             return
         }
         
-        DispatchQueue.main.async {
-            item.redo()
-        }
+        item.redo()
         
         undoActions.append(item)
     }
@@ -63,11 +61,11 @@ public class UndoStack: ObservableObject {
         redoActions.removeAll()
     }
 
-    public struct Action : Sendable {
-        let undo: @Sendable () -> Void
-        let redo: @Sendable () -> Void
+    public struct Action {
+        let undo: () -> Void
+        let redo: () -> Void
         
-        public init(undo: @Sendable @escaping () -> Void, redo: @Sendable @escaping () -> Void) {
+        public init(undo: @escaping () -> Void, redo: @escaping () -> Void) {
             self.undo = undo
             self.redo = redo
         }
