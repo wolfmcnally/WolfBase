@@ -47,6 +47,37 @@ extension Date {
         }
         self = try Date(s, strategy: .iso8601)
     }
+
+    /// If the `Date`'s time is `00:00:00 UTC`, it returns just the date with the format
+    /// `"yyyy-MM-dd"`. Otherwise, it returns the full ISO-8601 formatted string.
+    public var ISO8601UTC: String {
+        // Create a UTC calendar
+        var utcCalendar = Calendar(identifier: .gregorian)
+        utcCalendar.timeZone = TimeZone(secondsFromGMT: 0)!
+
+        // Extract UTC date components
+        let components = utcCalendar.dateComponents([.year, .month, .day, .hour, .minute, .second], from: self)
+        
+        // Check if time is exactly midnight
+        if let hour = components.hour,
+           let minute = components.minute,
+           let second = components.second,
+           hour == 0 && minute == 0 && second == 0 {
+            // Only date is needed: use a formatter with just the date style.
+            let dateFormatter = DateFormatter()
+            dateFormatter.calendar = utcCalendar
+            dateFormatter.timeZone = utcCalendar.timeZone
+            dateFormatter.dateFormat = "yyyy-MM-dd"
+            return dateFormatter.string(from: self)
+        } else {
+            // Full ISO-8601 with time. We can safely use ISO8601DateFormatter.
+            let isoFormatter = ISO8601DateFormatter()
+            isoFormatter.timeZone = utcCalendar.timeZone
+            // Using the format with seconds precision.
+            isoFormatter.formatOptions = [.withInternetDateTime, .withDashSeparatorInDate, .withColonSeparatorInTime, .withTimeZone]
+            return isoFormatter.string(from: self)
+        }
+    }
 }
 
 public func deserialize<T, D>(_ t: T.Type, _ data: D) -> Date? where T : DateTag, D : DataProtocol {
